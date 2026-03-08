@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab Tổng quan: thống kê nhanh cho student -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.student.OverviewTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="📊 Tổng quan" styleClass="page-title"/>
+
+        <!-- Stat cards -->
+        <HBox spacing="15">
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblClassCount" text="0" styleClass="stat-number"/>
+                <Label text="Lớp đang học" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblAttendRate" text="0%" styleClass="stat-number"/>
+                <Label text="Tỉ lệ đi học" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblAvgScore" text="—" styleClass="stat-number"/>
+                <Label text="Điểm trung bình" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="lblUnpaidCount" text="0" styleClass="stat-number"/>
+                <Label text="Hóa đơn chưa trả" styleClass="stat-label"/>
+            </VBox>
+        </HBox>
+
+        <!-- Lịch học sắp tới -->
+        <VBox styleClass="dashboard-card" spacing="12">
+            <Label text="📅 Lịch học sắp tới" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <TableView fx:id="tableUpcoming" styleClass="data-table" prefHeight="180">
+                <columns>
+                    <TableColumn fx:id="colUpClass" text="Lớp" prefWidth="150"/>
+                    <TableColumn fx:id="colUpDate" text="Ngày" prefWidth="120"/>
+                    <TableColumn fx:id="colUpTime" text="Giờ" prefWidth="140"/>
+                    <TableColumn fx:id="colUpRoom" text="Phòng" prefWidth="100"/>
+                </columns>
+                <placeholder><Label text="Không có lịch sắp tới"/></placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Thông báo mới -->
+        <VBox styleClass="dashboard-card" spacing="12">
+            <Label text="🔔 Thông báo mới nhất" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <TableView fx:id="tableRecentNotif" styleClass="data-table" prefHeight="120">
+                <columns>
+                    <TableColumn fx:id="colNotifDate" text="Ngày" prefWidth="120"/>
+                    <TableColumn fx:id="colNotifTitle" text="Tiêu đề" prefWidth="250"/>
+                    <TableColumn fx:id="colNotifContent" text="Nội dung" prefWidth="400"/>
+                </columns>
+                <placeholder><Label text="Không có thông báo"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

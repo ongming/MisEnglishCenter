@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab "Lớp đang dạy" cho Giảng viên -->
+<!-- Hiển thị danh sách lớp + danh sách học viên trong lớp được chọn -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.teacher.MyClassesTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="📚 Lớp đang dạy" styleClass="page-title"/>
+
+        <!-- Bảng danh sách lớp -->
+        <VBox styleClass="dashboard-card" spacing="12">
+            <Label text="Danh sách lớp" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <TableView fx:id="tableClasses" styleClass="data-table" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colClassName" text="Tên lớp" prefWidth="150"/>
+                    <TableColumn fx:id="colCourseName" text="Khóa học" prefWidth="200"/>
+                    <TableColumn fx:id="colStartDate" text="Bắt đầu" prefWidth="110"/>
+                    <TableColumn fx:id="colEndDate" text="Kết thúc" prefWidth="110"/>
+                    <TableColumn fx:id="colMaxStudent" text="Sĩ số tối đa" prefWidth="100"/>
+                    <TableColumn fx:id="colStatus" text="Trạng thái" prefWidth="110"/>
+                </columns>
+                <placeholder><Label text="Chưa có lớp nào"/></placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Bảng danh sách học viên trong lớp được chọn -->
+        <VBox styleClass="dashboard-card" spacing="12">
+            <Label fx:id="lblStudentListTitle" text="Danh sách học viên (chọn lớp ở trên)" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <TableView fx:id="tableStudents" styleClass="data-table" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="colStudentName" text="Họ và tên" prefWidth="200"/>
+                    <TableColumn fx:id="colStudentPhone" text="Số điện thoại" prefWidth="140"/>
+                    <TableColumn fx:id="colStudentEmail" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="colEnrollDate" text="Ngày ghi danh" prefWidth="120"/>
+                    <TableColumn fx:id="colEnrollStatus" text="Trạng thái" prefWidth="110"/>
+                </columns>
+                <placeholder><Label text="Chọn 1 lớp để xem danh sách học viên"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

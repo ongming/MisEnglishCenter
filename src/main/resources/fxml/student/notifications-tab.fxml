@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab Thông báo: notifications -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.student.NotificationsTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="🔔 Thông báo" styleClass="page-title"/>
+
+        <VBox styleClass="dashboard-card" spacing="12">
+            <TableView fx:id="tableNotifications" styleClass="data-table" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="colNotiDate" text="Ngày" prefWidth="150"/>
+                    <TableColumn fx:id="colNotiTitle" text="Tiêu đề" prefWidth="250"/>
+                    <TableColumn fx:id="colNotiContent" text="Nội dung" prefWidth="450"/>
+                </columns>
+                <placeholder><Label text="Không có thông báo"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

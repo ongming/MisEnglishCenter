@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab Chứng chỉ: certificates -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.student.CertificatesTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="🏆 Chứng chỉ" styleClass="page-title"/>
+
+        <VBox styleClass="dashboard-card" spacing="12">
+            <TableView fx:id="tableCerts" styleClass="data-table" prefHeight="300">
+                <columns>
+                    <TableColumn fx:id="colCertName" text="Tên chứng chỉ" prefWidth="300"/>
+                    <TableColumn fx:id="colCertClass" text="Lớp" prefWidth="150"/>
+                    <TableColumn fx:id="colCertDate" text="Ngày cấp" prefWidth="130"/>
+                    <TableColumn fx:id="colCertSerial" text="Số serial" prefWidth="200"/>
+                </columns>
+                <placeholder><Label text="Chưa có chứng chỉ"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab Lịch học: schedules -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.student.ScheduleTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="📅 Lịch học" styleClass="page-title"/>
+
+        <VBox styleClass="dashboard-card" spacing="12">
+            <TableView fx:id="tableSchedule" styleClass="data-table" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="colSchClass" text="Lớp" prefWidth="150"/>
+                    <TableColumn fx:id="colSchDate" text="Ngày học" prefWidth="120"/>
+                    <TableColumn fx:id="colSchStart" text="Bắt đầu" prefWidth="100"/>
+                    <TableColumn fx:id="colSchEnd" text="Kết thúc" prefWidth="100"/>
+                    <TableColumn fx:id="colSchRoom" text="Phòng" prefWidth="100"/>
+                </columns>
+                <placeholder><Label text="Chưa có lịch học"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

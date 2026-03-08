@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.StudentController"
+            stylesheets="@../css/styles.css"
+            styleClass="main-background"
+            prefWidth="1200" prefHeight="750">
+
+    <!-- ============ TOP: Header ============ -->
+    <top>
+        <HBox styleClass="page-header" alignment="CENTER_LEFT" spacing="15">
+            <padding><Insets top="15" bottom="15" left="25" right="25"/></padding>
+
+            <Label text="🎓" style="-fx-font-size: 28px;"/>
+            <VBox spacing="2">
+                <Label text="Quản lý Học viên" styleClass="page-title"/>
+                <Label text="Thêm, sửa, xóa và tìm kiếm thông tin học viên" styleClass="page-subtitle"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Thống kê nhanh -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="2">
+                    <Label fx:id="lblTotalStudents" text="0" styleClass="stat-number"/>
+                    <Label text="Tổng HV" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="2">
+                    <Label fx:id="lblActiveStudents" text="0" styleClass="stat-number"/>
+                    <Label text="Đang học" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="2">
+                    <Label fx:id="lblInactiveStudents" text="0" styleClass="stat-number"/>
+                    <Label text="Nghỉ học" styleClass="stat-label"/>
+                </VBox>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- ============ CENTER: Bảng + Form ============ -->
+    <center>
+        <HBox spacing="0">
+
+            <!-- === BÊN TRÁI: Toolbar + Bảng danh sách === -->
+            <VBox HBox.hgrow="ALWAYS" spacing="0">
+
+                <!-- Toolbar: Tìm kiếm + Nút thao tác -->
+                <HBox styleClass="toolbar" alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets top="12" bottom="12" left="20" right="20"/></padding>
+
+                    <!-- Tìm kiếm -->
+                    <HBox styleClass="search-box" alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🔍" style="-fx-font-size: 14px;"/>
+                        <TextField fx:id="txtSearch" promptText="Tìm theo tên, SĐT, email..."
+                                   styleClass="search-field" prefWidth="280"/>
+                    </HBox>
+
+                    <!-- Lọc trạng thái -->
+                    <ComboBox fx:id="cboStatusFilter" promptText="Trạng thái" styleClass="filter-combo"
+                              prefWidth="140"/>
+
+                    <!-- Lọc giới tính -->
+                    <ComboBox fx:id="cboGenderFilter" promptText="Giới tính" styleClass="filter-combo"
+                              prefWidth="130"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <!-- Nút thao tác -->
+                    <Button fx:id="btnAdd" text="➕ Thêm mới" styleClass="btn-primary"
+                            onAction="#handleAdd"/>
+                    <Button fx:id="btnEdit" text="✏️ Sửa" styleClass="btn-warning"
+                            onAction="#handleEdit" disable="true"/>
+                    <Button fx:id="btnDelete" text="🗑️ Xóa" styleClass="btn-danger"
+                            onAction="#handleDelete" disable="true"/>
+                    <Button fx:id="btnRefresh" text="🔄" styleClass="btn-secondary"
+                            onAction="#handleRefresh"/>
+                </HBox>
+
+                <!-- Bảng danh sách học viên -->
+                <TableView fx:id="tableStudents" styleClass="data-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn text="ID" prefWidth="60" styleClass="col-center">
+                            <cellValueFactory><PropertyValueFactory property="studentId"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Họ và tên" prefWidth="180">
+                            <cellValueFactory><PropertyValueFactory property="fullName"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Ngày sinh" prefWidth="110" styleClass="col-center">
+                            <cellValueFactory><PropertyValueFactory property="dateOfBirth"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Giới tính" prefWidth="90" styleClass="col-center">
+                            <cellValueFactory><PropertyValueFactory property="gender"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Số điện thoại" prefWidth="130">
+                            <cellValueFactory><PropertyValueFactory property="phone"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Email" prefWidth="190">
+                            <cellValueFactory><PropertyValueFactory property="email"/></cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Trạng thái" prefWidth="100" styleClass="col-center">
+                            <cellValueFactory><PropertyValueFactory property="status"/></cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                    <placeholder>
+                        <Label text="Chưa có dữ liệu học viên" style="-fx-text-fill: #BDB08A; -fx-font-size: 14px;"/>
+                    </placeholder>
+                </TableView>
+
+                <!-- Footer: Phân trang + Tổng số -->
+                <HBox styleClass="table-footer" alignment="CENTER" spacing="15">
+                    <padding><Insets top="10" bottom="10" left="20" right="20"/></padding>
+
+                    <Label fx:id="lblRowCount" text="Hiển thị 0 học viên"
+                           style="-fx-text-fill: #795548; -fx-font-size: 12px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnExport" text="📥 Xuất Excel" styleClass="btn-secondary"
+                            onAction="#handleExport"/>
+                </HBox>
+            </VBox>
+
+            <!-- === BÊN PHẢI: Form nhập liệu === -->
+            <VBox fx:id="formPanel" styleClass="form-panel" spacing="12" prefWidth="350" visible="false" managed="false">
+                <padding><Insets top="20" bottom="20" left="25" right="25"/></padding>
+
+                <!-- Form Header -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label fx:id="lblFormTitle" text="Thêm học viên" styleClass="form-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnCloseForm" text="✕" styleClass="btn-close-form"
+                            onAction="#handleCloseForm"/>
+                </HBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Họ tên -->
+                <VBox spacing="5">
+                    <Label text="Họ và tên *" styleClass="form-label"/>
+                    <TextField fx:id="txtFullName" promptText="Nhập họ và tên..."
+                               styleClass="form-field"/>
+                </VBox>
+
+                <!-- Ngày sinh -->
+                <VBox spacing="5">
+                    <Label text="Ngày sinh" styleClass="form-label"/>
+                    <DatePicker fx:id="dpDateOfBirth" promptText="Chọn ngày sinh..."
+                                styleClass="form-field" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+
+                <!-- Giới tính -->
+                <VBox spacing="5">
+                    <Label text="Giới tính" styleClass="form-label"/>
+                    <ComboBox fx:id="cboGender" promptText="Chọn giới tính..."
+                              styleClass="form-field" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+
+                <!-- Số điện thoại -->
+                <VBox spacing="5">
+                    <Label text="Số điện thoại" styleClass="form-label"/>
+                    <TextField fx:id="txtPhone" promptText="Nhập số điện thoại..."
+                               styleClass="form-field"/>
+                </VBox>
+
+                <!-- Email -->
+                <VBox spacing="5">
+                    <Label text="Email" styleClass="form-label"/>
+                    <TextField fx:id="txtEmail" promptText="Nhập email..."
+                               styleClass="form-field"/>
+                </VBox>
+
+                <!-- Địa chỉ -->
+                <VBox spacing="5">
+                    <Label text="Địa chỉ" styleClass="form-label"/>
+                    <TextArea fx:id="txtAddress" promptText="Nhập địa chỉ..."
+                              styleClass="form-field" prefRowCount="2" wrapText="true"/>
+                </VBox>
+
+                <!-- Trạng thái -->
+                <VBox spacing="5">
+                    <Label text="Trạng thái" styleClass="form-label"/>
+                    <ComboBox fx:id="cboStatus" promptText="Chọn trạng thái..."
+                              styleClass="form-field" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+
+                <!-- Thông báo lỗi form -->
+                <Label fx:id="lblFormError" styleClass="error-label" wrapText="true"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <!-- Nút Lưu / Hủy -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnCancel" text="Hủy" styleClass="btn-secondary"
+                            onAction="#handleCloseForm" prefWidth="100"/>
+                    <Button fx:id="btnSave" text="💾 Lưu" styleClass="btn-primary"
+                            onAction="#handleSave" prefWidth="140"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>
+

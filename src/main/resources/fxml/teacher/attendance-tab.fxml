@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Tab "Điểm danh" cho Giảng viên -->
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.teacher.AttendanceTabController"
+            fitToWidth="true" style="-fx-background-color: transparent;">
+    <VBox spacing="20">
+        <padding><Insets top="25" bottom="25" left="30" right="30"/></padding>
+
+        <Label text="✅ Điểm danh" styleClass="page-title"/>
+
+        <VBox styleClass="dashboard-card" spacing="12">
+            <TableView fx:id="tableAttendance" styleClass="data-table" prefHeight="450">
+                <columns>
+                    <TableColumn fx:id="colAttClass" text="Lớp" prefWidth="150"/>
+                    <TableColumn fx:id="colAttStudent" text="Học viên" prefWidth="180"/>
+                    <TableColumn fx:id="colAttDate" text="Ngày" prefWidth="120"/>
+                    <TableColumn fx:id="colAttStatus" text="Trạng thái" prefWidth="120"/>
+                    <TableColumn fx:id="colAttNote" text="Ghi chú" prefWidth="250"/>
+                </columns>
+                <placeholder><Label text="Chưa có dữ liệu điểm danh"/></placeholder>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

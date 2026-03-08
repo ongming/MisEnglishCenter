@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.center.manager.controllers.StudentDashboardController"
+            stylesheets="@../css/styles.css"
+            styleClass="main-background"
+            prefWidth="1200" prefHeight="750">
+
+    <!-- ============ LEFT: Sidebar ============ -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="230" spacing="0">
+
+            <!-- Avatar + Tên -->
+            <VBox alignment="CENTER" spacing="5" styleClass="sidebar-profile">
+                <padding><Insets top="20" bottom="15" left="15" right="15"/></padding>
+                <Label text="🎓" style="-fx-font-size: 40px;"/>
+                <Label fx:id="lblSidebarName" text="Học viên" styleClass="sidebar-name"/>
+                <Label fx:id="lblSidebarRole" text="Student" styleClass="sidebar-role-badge"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: rgba(255,255,255,0.2);"/>
+
+            <!-- Navigation -->
+            <VBox spacing="2" styleClass="sidebar-nav">
+                <padding><Insets top="10" bottom="10" left="8" right="8"/></padding>
+
+                <Button fx:id="btnOverview" text="📊  Tổng quan" styleClass="sidebar-btn"
+                        onAction="#handleOverviewTab" maxWidth="Infinity"/>
+                <Button fx:id="btnProfile" text="👤  Thông tin cá nhân" styleClass="sidebar-btn"
+                        onAction="#handleProfileTab" maxWidth="Infinity"/>
+                <Button fx:id="btnClasses" text="📚  Lớp học" styleClass="sidebar-btn"
+                        onAction="#handleClassesTab" maxWidth="Infinity"/>
+                <Button fx:id="btnSchedule" text="📅  Lịch học" styleClass="sidebar-btn"
+                        onAction="#handleScheduleTab" maxWidth="Infinity"/>
+                <Button fx:id="btnAttendance" text="✅  Điểm danh" styleClass="sidebar-btn"
+                        onAction="#handleAttendanceTab" maxWidth="Infinity"/>
+                <Button fx:id="btnResults" text="📝  Kết quả học tập" styleClass="sidebar-btn"
+                        onAction="#handleResultsTab" maxWidth="Infinity"/>
+                <Button fx:id="btnFinance" text="💰  Học phí" styleClass="sidebar-btn"
+                        onAction="#handleFinanceTab" maxWidth="Infinity"/>
+                <Button fx:id="btnCertificates" text="🏆  Chứng chỉ" styleClass="sidebar-btn"
+                        onAction="#handleCertificatesTab" maxWidth="Infinity"/>
+                <Button fx:id="btnNotifications" text="🔔  Thông báo" styleClass="sidebar-btn"
+                        onAction="#handleNotificationsTab" maxWidth="Infinity"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Logout -->
+            <VBox styleClass="sidebar-bottom">
+                <padding><Insets top="10" bottom="15" left="8" right="8"/></padding>
+                <Button text="🚪  Đăng xuất" styleClass="sidebar-btn-logout"
+                        onAction="#handleLogout" maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ============ CENTER: Content Area ============ -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="main-background">
+            <padding><Insets top="0" bottom="0" left="0" right="0"/></padding>
+        </StackPane>
+    </center>
+
+</BorderPane>
+
