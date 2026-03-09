@@ -1,7 +1,9 @@
 package com.center.manager.controllers;
 
 import com.center.manager.config.UserSession;
+import com.center.manager.entities.Teacher;
 import com.center.manager.entities.UserAccount;
+import com.center.manager.repositories.TeacherRepository;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,11 +41,16 @@ public class TeacherDashboardController {
     // Spring context — dùng để load Controller từ Spring khi chuyển tab
     private final ApplicationContext springContext;
 
+    // Repository — dùng để lấy tên giảng viên từ bảng teachers
+    private final TeacherRepository teacherRepository;
+
     // Nút đang được chọn (active) — để đổi style
     private Button currentActiveBtn;
 
-    public TeacherDashboardController(ApplicationContext springContext) {
+    public TeacherDashboardController(ApplicationContext springContext,
+                                      TeacherRepository teacherRepository) {
         this.springContext = springContext;
+        this.teacherRepository = teacherRepository;
     }
 
     /**
@@ -55,7 +62,14 @@ public class TeacherDashboardController {
         // Lấy thông tin user đang đăng nhập từ session
         UserAccount user = UserSession.getInstance().getCurrentUser();
         if (user != null) {
-            lblSidebarName.setText(user.getUsername());
+            // Lấy tên thật của GV từ bảng teachers (thay vì hiện username)
+            if (user.getTeacherId() != null) {
+                teacherRepository.findById(user.getTeacherId())
+                        .ifPresent(teacher -> lblSidebarName.setText(teacher.getFullName()));
+                // ifPresent: nếu tìm thấy teacher → set tên, nếu không → bỏ qua
+            } else {
+                lblSidebarName.setText(user.getUsername());
+            }
             lblSidebarRole.setText("Giảng viên");
         }
 

@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 
 <!-- Tab "Điểm danh" cho Giảng viên -->
+<!-- GV chọn lớp + ngày → hiện danh sách HV → chọn trạng thái → Lưu -->
 <ScrollPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.center.manager.controllers.teacher.AttendanceTabController"
             fitToWidth="true" style="-fx-background-color: transparent;">
@@ -12,16 +13,32 @@
 
         <Label text="✅ Điểm danh" styleClass="page-title"/>
 
+        <!-- Thanh chọn Lớp + Ngày + Nút Tải -->
         <VBox styleClass="dashboard-card" spacing="12">
-            <TableView fx:id="tableAttendance" styleClass="data-table" prefHeight="450">
+            <Label text="Chọn lớp và ngày điểm danh" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Lớp:" styleClass="form-label"/>
+                <ComboBox fx:id="cboClass" prefWidth="200" promptText="-- Chọn lớp --"/>
+                <Label text="Ngày:" styleClass="form-label"/>
+                <DatePicker fx:id="dpAttendDate" prefWidth="160"/>
+                <Button text="📋 Tải danh sách" styleClass="btn-primary" onAction="#handleLoadAttendance"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="💾 Lưu điểm danh" styleClass="btn-primary" onAction="#handleSaveAttendance"/>
+            </HBox>
+        </VBox>
+
+        <!-- Bảng điểm danh -->
+        <VBox styleClass="dashboard-card" spacing="12">
+            <Label fx:id="lblAttendanceTitle" text="Danh sách điểm danh" styleClass="card-title"/>
+            <Separator styleClass="form-separator"/>
+            <TableView fx:id="tableAttendance" styleClass="data-table" prefHeight="400">
                 <columns>
-                    <TableColumn fx:id="colAttClass" text="Lớp" prefWidth="150"/>
-                    <TableColumn fx:id="colAttStudent" text="Học viên" prefWidth="180"/>
-                    <TableColumn fx:id="colAttDate" text="Ngày" prefWidth="120"/>
-                    <TableColumn fx:id="colAttStatus" text="Trạng thái" prefWidth="120"/>
-                    <TableColumn fx:id="colAttNote" text="Ghi chú" prefWidth="250"/>
+                    <TableColumn fx:id="colAttStudent" text="Học viên" prefWidth="200"/>
+                    <TableColumn fx:id="colAttStatus" text="Trạng thái" prefWidth="140"/>
+                    <TableColumn fx:id="colAttNote" text="Ghi chú" prefWidth="300"/>
                 </columns>
-                <placeholder><Label text="Chưa có dữ liệu điểm danh"/></placeholder>
+                <placeholder><Label text="Chọn lớp và ngày rồi nhấn 'Tải danh sách'"/></placeholder>
             </TableView>
         </VBox>
     </VBox>
