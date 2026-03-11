@@ -40,3 +40,7 @@ build/
 mvn-out.txt
 mvn-output.txt
 database.txt
+
+### Database config (chứa password, không push lên GitHub) ###
+src/main/resources/db.properties
+

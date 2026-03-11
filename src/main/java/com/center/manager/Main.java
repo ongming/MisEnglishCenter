@@ -1,24 +1,26 @@
 package com.center.manager;
 
-import javafx.application.Application;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.center.manager.ui.LoginFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * Điểm khởi chạy chính của ứng dụng.
- *
- * --- @SpringBootApplication ---
- * Đánh dấu đây là ứng dụng Spring Boot.
- * Spring sẽ tự quét (scan) tất cả class trong package com.center.manager
- * để tìm @Entity, @Repository, @Service, @Component... và tạo bean.
- *
- * --- Tại sao gọi JavaFxApplication? ---
- * Main.java là nơi JVM gọi đầu tiên (hàm main).
- * Từ đây ta khởi chạy JavaFX → JavaFX sẽ khởi chạy Spring Boot bên trong.
+ * Không dùng Spring Boot — chỉ dùng Java Swing thuần.
  */
-@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        // Khởi chạy ứng dụng JavaFX (JavaFxApplication.init → start)
-        Application.launch(JavaFxApplication.class, args);
+        // Set Look and Feel cho đẹp hơn
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {
+        }
+
+        // Khởi chạy giao diện Swing trên EDT (Event Dispatch Thread)
+        SwingUtilities.invokeLater(() -> {
+            LoginFrame loginFrame = new LoginFrame();
+            loginFrame.setVisible(true);
+        });
     }
 }
+
