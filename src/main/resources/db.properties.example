@@ -1,0 +1,5 @@
+## Copy file này thành db.properties và điền thông tin kết nối MySQL của bạn
+db.url=jdbc:mysql://localhost:3306/mis_language_center?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+db.username=root
+db.password=YOUR_PASSWORD_HERE
+
