@@ -1,13 +1,14 @@
 package com.center.manager.ui;
 
-import com.center.manager.dao.AuthDAO;
+import com.center.manager.service.AuthService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Màn hình đăng nhập — thay thế login-view.fxml + LoginController.
+ * Màn hình đăng nhập.
  */
 public class LoginFrame extends JFrame {
 
@@ -16,7 +17,7 @@ public class LoginFrame extends JFrame {
     private JButton btnLogin;
     private JLabel lblError;
 
-    private final AuthDAO authDAO = new AuthDAO();
+    private final AuthService authService = ServiceFactory.authService();
 
     public LoginFrame() {
         setTitle("MIS English Center - Đăng nhập");
@@ -98,29 +99,37 @@ public class LoginFrame extends JFrame {
 
         // Chạy trên thread riêng để không đơ giao diện
         new Thread(() -> {
-            Object[] result = authDAO.login(username, password);
+            try {
+                Object[] result = authService.login(username, password);
 
-            SwingUtilities.invokeLater(() -> {
-                btnLogin.setEnabled(true);
-                btnLogin.setText("ĐĂNG NHẬP");
+                SwingUtilities.invokeLater(() -> {
+                    btnLogin.setEnabled(true);
+                    btnLogin.setText("ĐĂNG NHẬP");
 
-                if (result != null) {
-                    // Lưu session
-                    UserSession.getInstance().set(
-                            (Long) result[0],
-                            (String) result[1],
-                            (String) result[2],
-                            (Long) result[3],
-                            (Long) result[4],
-                            (Long) result[5]
-                    );
+                    if (result != null) {
+                        // Lưu session
+                        UserSession.getInstance().set(
+                                (Long) result[0],
+                                (String) result[1],
+                                (String) result[2],
+                                (Long) result[3],
+                                (Long) result[4],
+                                (Long) result[5]
+                        );
 
-                    String role = (String) result[2];
-                    navigateToDashboard(role);
-                } else {
-                    lblError.setText("Sai tên đăng nhập hoặc mật khẩu.");
-                }
-            });
+                        String role = (String) result[2];
+                        navigateToDashboard(role);
+                    } else {
+                        lblError.setText("Sai tên đăng nhập hoặc mật khẩu.");
+                    }
+                });
+            } catch (Exception ex) {
+                SwingUtilities.invokeLater(() -> {
+                    btnLogin.setEnabled(true);
+                    btnLogin.setText("ĐĂNG NHẬP");
+                    lblError.setText("Lỗi hệ thống: " + ex.getMessage());
+                });
+            }
         }).start();
     }
 
@@ -144,4 +153,3 @@ public class LoginFrame extends JFrame {
         }
     }
 }
-

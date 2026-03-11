@@ -1,6 +1,7 @@
 package com.center.manager.ui.panel;
 
-import com.center.manager.dao.ClassDAO;
+import com.center.manager.service.ClassService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -10,7 +11,6 @@ import java.util.List;
 
 /**
  * Tab "Lớp đang dạy" — bảng lớp (trên) + bảng học viên (dưới).
- * Thay thế my-classes-tab.fxml + MyClassesTabController.
  */
 public class TeacherClassesPanel extends JPanel {
 
@@ -20,7 +20,7 @@ public class TeacherClassesPanel extends JPanel {
     private DefaultTableModel studentModel;
     private JLabel lblStudentTitle;
 
-    private final ClassDAO classDAO = new ClassDAO();
+    private final ClassService classService = ServiceFactory.classService();
 
     public TeacherClassesPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -100,20 +100,24 @@ public class TeacherClassesPanel extends JPanel {
         Long teacherId = UserSession.getInstance().getTeacherId();
         if (teacherId == null) return;
 
-        List<Object[]> classes = classDAO.getClassesByTeacher(teacherId);
-        for (Object[] row : classes) {
-            classModel.addRow(row);
-        }
+        try {
+            List<Object[]> classes = classService.getClassesByTeacher(teacherId);
+            for (Object[] row : classes) {
+                classModel.addRow(row);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void loadStudentsInClass(Long classId, String className) {
         studentModel.setRowCount(0);
         lblStudentTitle.setText("Danh sách học viên — Lớp " + className);
 
-        List<Object[]> students = classDAO.getStudentsInClass(classId);
-        for (Object[] row : students) {
-            studentModel.addRow(row);
-        }
+        try {
+            List<Object[]> students = classService.getStudentsInClass(classId);
+            for (Object[] row : students) {
+                studentModel.addRow(row);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
 

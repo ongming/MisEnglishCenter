@@ -1,6 +1,8 @@
 package com.center.manager.ui.panel;
 
-import com.center.manager.dao.ClassDAO;
+import com.center.manager.service.AttendanceService;
+import com.center.manager.service.ClassService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -12,7 +14,6 @@ import java.util.List;
 
 /**
  * Tab "Điểm danh" — GV chọn lớp + ngày, điểm danh cho HV.
- * Thay thế teacher/attendance-tab.fxml + AttendanceTabController.
  */
 public class TeacherAttendancePanel extends JPanel {
 
@@ -22,7 +23,8 @@ public class TeacherAttendancePanel extends JPanel {
     private DefaultTableModel attModel;
     private JLabel lblTitle;
 
-    private final ClassDAO classDAO = new ClassDAO();
+    private final ClassService classService = ServiceFactory.classService();
+    private final AttendanceService attendanceService = ServiceFactory.attendanceService();
 
     // Lưu classId tương ứng với ComboBox
     private java.util.List<Long> classIds = new java.util.ArrayList<>();
@@ -99,11 +101,13 @@ public class TeacherAttendancePanel extends JPanel {
         Long teacherId = UserSession.getInstance().getTeacherId();
         if (teacherId == null) return;
 
-        List<Object[]> classes = classDAO.getClassesByTeacher(teacherId);
-        for (Object[] row : classes) {
-            classIds.add((Long) row[0]);
-            cboClass.addItem((String) row[1]); // className
-        }
+        try {
+            List<Object[]> classes = classService.getClassesByTeacher(teacherId);
+            for (Object[] row : classes) {
+                classIds.add((Long) row[0]);
+                cboClass.addItem((String) row[1]); // className
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void handleLoadAttendance() {
@@ -125,26 +129,28 @@ public class TeacherAttendancePanel extends JPanel {
 
         attModel.setRowCount(0);
 
-        // Thử lấy điểm danh đã có
-        List<Object[]> existing = classDAO.getAttendanceByClassAndDate(classId, dateStr);
+        try {
+            // Thử lấy điểm danh đã có
+            List<Object[]> existing = attendanceService.getByClassAndDate(classId, dateStr);
 
-        if (!existing.isEmpty()) {
-            for (Object[] row : existing) {
-                attModel.addRow(row);
+            if (!existing.isEmpty()) {
+                for (Object[] row : existing) {
+                    attModel.addRow(row);
+                }
+            } else {
+                // Chưa có → tạo danh sách mới từ enrollment
+                List<Object[]> students = classService.getStudentsInClass(classId);
+                for (Object[] s : students) {
+                    attModel.addRow(new Object[]{
+                            0L,        // attendanceId = 0 (chưa lưu)
+                            s[0],      // studentId
+                            s[1],      // fullName
+                            "Present", // mặc định
+                            ""         // ghi chú
+                    });
+                }
             }
-        } else {
-            // Chưa có → tạo danh sách mới từ enrollment
-            List<Object[]> students = classDAO.getStudentsInClass(classId);
-            for (Object[] s : students) {
-                attModel.addRow(new Object[]{
-                        0L,        // attendanceId = 0 (chưa lưu)
-                        s[0],      // studentId
-                        s[1],      // fullName
-                        "Present", // mặc định
-                        ""         // ghi chú
-                });
-            }
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     private void handleSaveAttendance() {
@@ -171,7 +177,7 @@ public class TeacherAttendancePanel extends JPanel {
                 String note = (String) attModel.getValueAt(i, 4);
 
                 // attId == 0 → tạo mới
-                classDAO.saveAttendance(
+                attendanceService.saveAttendance(
                         attId != null && attId > 0 ? attId : null,
                         studentId, classId, dateStr, status, note
                 );

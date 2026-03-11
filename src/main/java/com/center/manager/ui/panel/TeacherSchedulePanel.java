@@ -1,6 +1,7 @@
 package com.center.manager.ui.panel;
 
-import com.center.manager.dao.ClassDAO;
+import com.center.manager.service.ClassService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -10,14 +11,13 @@ import java.util.List;
 
 /**
  * Tab "Lịch dạy" — hiển thị tất cả buổi học của GV.
- * Thay thế teacher/schedule-tab.fxml + ScheduleTabController.
  */
 public class TeacherSchedulePanel extends JPanel {
 
     private JTable tableSchedule;
     private DefaultTableModel scheduleModel;
 
-    private final ClassDAO classDAO = new ClassDAO();
+    private final ClassService classService = ServiceFactory.classService();
 
     public TeacherSchedulePanel() {
         setLayout(new BorderLayout(10, 10));
@@ -51,10 +51,12 @@ public class TeacherSchedulePanel extends JPanel {
         Long teacherId = UserSession.getInstance().getTeacherId();
         if (teacherId == null) return;
 
-        List<Object[]> schedules = classDAO.getScheduleByTeacher(teacherId);
-        for (Object[] row : schedules) {
-            scheduleModel.addRow(row);
-        }
+        try {
+            List<Object[]> schedules = classService.getScheduleByTeacher(teacherId);
+            for (Object[] row : schedules) {
+                scheduleModel.addRow(row);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
 

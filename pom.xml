@@ -24,6 +24,20 @@
             <version>8.3.0</version>
         </dependency>
 
+        <!-- Hibernate / JPA -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.4.4.Final</version>
+        </dependency>
+
+        <!-- Jakarta Persistence API -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
         <!-- jBCrypt - tương thích với Spring Security BCrypt hash -->
         <dependency>
             <groupId>org.mindrot</groupId>

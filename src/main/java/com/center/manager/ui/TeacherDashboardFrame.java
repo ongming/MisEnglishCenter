@@ -1,6 +1,7 @@
 package com.center.manager.ui;
 
-import com.center.manager.dao.TeacherDAO;
+import com.center.manager.service.PersonService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.ui.panel.TeacherClassesPanel;
 import com.center.manager.ui.panel.TeacherSchedulePanel;
 import com.center.manager.ui.panel.TeacherAttendancePanel;
@@ -10,8 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Dashboard Giảng viên — thay thế teacher-dashboard-view.fxml + TeacherDashboardController.
- * Dùng CardLayout để chuyển đổi giữa các tab.
+ * Dashboard Giảng viên.
  */
 public class TeacherDashboardFrame extends JFrame {
 
@@ -19,6 +19,8 @@ public class TeacherDashboardFrame extends JFrame {
     private CardLayout cardLayout;
     private JButton btnMyClasses, btnSchedule, btnAttendance, btnLogout;
     private JButton currentActiveBtn;
+
+    private final PersonService personService = ServiceFactory.personService();
 
     public TeacherDashboardFrame() {
         setTitle("MIS English Center - Giảng viên");
@@ -43,8 +45,10 @@ public class TeacherDashboardFrame extends JFrame {
         String displayName = UserSession.getInstance().getUsername();
         Long teacherId = UserSession.getInstance().getTeacherId();
         if (teacherId != null) {
-            String realName = new TeacherDAO().getTeacherName(teacherId);
-            if (realName != null) displayName = realName;
+            try {
+                String realName = personService.getTeacherName(teacherId);
+                if (realName != null) displayName = realName;
+            } catch (Exception ignored) {}
         }
 
         JLabel lblName = new JLabel(displayName);

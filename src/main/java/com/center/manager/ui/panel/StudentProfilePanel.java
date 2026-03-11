@@ -1,6 +1,7 @@
 package com.center.manager.ui.panel;
 
-import com.center.manager.dao.ClassDAO;
+import com.center.manager.service.PersonService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.awt.*;
  */
 public class StudentProfilePanel extends JPanel {
 
-    private final ClassDAO classDAO = new ClassDAO();
+    private final PersonService personService = ServiceFactory.personService();
 
     public StudentProfilePanel() {
         setLayout(new BorderLayout(10, 10));
@@ -30,7 +31,10 @@ public class StudentProfilePanel extends JPanel {
             return;
         }
 
-        Object[] profile = classDAO.getStudentProfile(studentId);
+        Object[] profile = null;
+        try {
+            profile = personService.getStudentProfile(studentId);
+        } catch (Exception e) { e.printStackTrace(); }
         if (profile == null) {
             add(new JLabel("Không tìm thấy thông tin sinh viên trong database."), BorderLayout.CENTER);
             return;
