@@ -1,6 +1,7 @@
 package com.center.manager.ui.panel;
 
-import com.center.manager.dao.ClassDAO;
+import com.center.manager.service.ClassService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class StudentClassesPanel extends JPanel {
     private JTable tableClasses;
     private DefaultTableModel classModel;
 
-    private final ClassDAO classDAO = new ClassDAO();
+    private final ClassService classService = ServiceFactory.classService();
 
     public StudentClassesPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -50,10 +51,12 @@ public class StudentClassesPanel extends JPanel {
         Long studentId = UserSession.getInstance().getStudentId();
         if (studentId == null) return;
 
-        List<Object[]> classes = classDAO.getClassesByStudent(studentId);
-        for (Object[] row : classes) {
-            classModel.addRow(row);
-        }
+        try {
+            List<Object[]> classes = classService.getClassesByStudent(studentId);
+            for (Object[] row : classes) {
+                classModel.addRow(row);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
 

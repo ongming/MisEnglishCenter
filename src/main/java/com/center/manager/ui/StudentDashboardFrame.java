@@ -1,6 +1,7 @@
 package com.center.manager.ui;
 
-import com.center.manager.dao.TeacherDAO;
+import com.center.manager.service.PersonService;
+import com.center.manager.service.ServiceFactory;
 import com.center.manager.ui.panel.*;
 import com.center.manager.util.UserSession;
 
@@ -8,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Dashboard Sinh viên — thay thế student-dashboard-view.fxml + StudentDashboardController.
+ * Dashboard Sinh viên.
  */
 public class StudentDashboardFrame extends JFrame {
 
@@ -16,6 +17,8 @@ public class StudentDashboardFrame extends JFrame {
     private CardLayout cardLayout;
     private JButton btnProfile, btnClasses, btnSchedule, btnAttendance, btnLogout;
     private JButton currentActiveBtn;
+
+    private final PersonService personService = ServiceFactory.personService();
 
     public StudentDashboardFrame() {
         setTitle("MIS English Center - Học viên");
@@ -40,8 +43,10 @@ public class StudentDashboardFrame extends JFrame {
         String displayName = UserSession.getInstance().getUsername();
         Long studentId = UserSession.getInstance().getStudentId();
         if (studentId != null) {
-            String realName = new TeacherDAO().getStudentName(studentId);
-            if (realName != null) displayName = realName;
+            try {
+                String realName = personService.getStudentName(studentId);
+                if (realName != null) displayName = realName;
+            } catch (Exception ignored) {}
         }
 
         JLabel lblName = new JLabel(displayName);
