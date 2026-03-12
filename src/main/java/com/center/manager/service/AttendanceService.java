@@ -5,7 +5,6 @@ import com.center.manager.model.Attendance;
 import com.center.manager.repo.AttendanceRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,34 +25,20 @@ public class AttendanceService {
     }
 
     public List<Object[]> getHistoryByClass(Long classId) throws Exception {
-        return tx.runInTransaction(em -> {
-            List<Object[]> rows = attendanceRepo.findHistoryByClass(em, classId);
-            List<Object[]> result = new ArrayList<>();
-            for (Object[] r : rows) {
-                result.add(new Object[]{
-                        r[0], r[1],
-                        r[2] != null ? r[2].toString() : "",
-                        r[3], r[4]
-                });
-            }
-            return result;
-        });
+        return tx.runInTransaction(em ->
+                attendanceRepo.findHistoryByClass(em, classId).stream()
+                        .map(r -> new Object[]{r[0], r[1], str(r[2]), r[3], r[4]})
+                        .toList());
     }
 
     public List<Object[]> getByStudent(Long studentId) throws Exception {
-        return tx.runInTransaction(em -> {
-            List<Object[]> rows = attendanceRepo.findByStudent(em, studentId);
-            List<Object[]> result = new ArrayList<>();
-            for (Object[] r : rows) {
-                result.add(new Object[]{
-                        r[0],
-                        r[1] != null ? r[1].toString() : "",
-                        r[2], r[3]
-                });
-            }
-            return result;
-        });
+        return tx.runInTransaction(em ->
+                attendanceRepo.findByStudent(em, studentId).stream()
+                        .map(r -> new Object[]{r[0], str(r[1]), r[2], r[3]})
+                        .toList());
     }
+
+    private String str(Object o) { return o == null ? "" : o.toString(); }
 
     public void saveAttendance(Long attendanceId, Long studentId, Long classId,
                                String attendDate, String status, String note) throws Exception {

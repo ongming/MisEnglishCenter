@@ -89,16 +89,20 @@ public class TeacherDashboardFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         UITheme.styleRootPanel(contentPanel);
 
-        contentPanel.add(new TeacherClassesPanel(), "classes");
-        contentPanel.add(new TeacherSchedulePanel(), "schedule");
-        contentPanel.add(new TeacherAttendancePanel(), "attendance");
+        TeacherClassesPanel classesPanel = new TeacherClassesPanel();
+        TeacherSchedulePanel schedulePanel = new TeacherSchedulePanel();
+        TeacherAttendancePanel attendancePanel = new TeacherAttendancePanel();
+
+        contentPanel.add(classesPanel, "classes");
+        contentPanel.add(schedulePanel, "schedule");
+        contentPanel.add(attendancePanel, "attendance");
 
         add(contentPanel, BorderLayout.CENTER);
 
         // ========== SỰ KIỆN ==========
-        btnMyClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); setActiveButton(btnMyClasses); });
-        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); setActiveButton(btnSchedule); });
-        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); setActiveButton(btnAttendance); });
+        btnMyClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); classesPanel.refreshData(); setActiveButton(btnMyClasses); });
+        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); schedulePanel.refreshData(); setActiveButton(btnSchedule); });
+        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); attendancePanel.refreshData(); setActiveButton(btnAttendance); });
         btnLogout.addActionListener(e -> handleLogout());
 
         // Mặc định hiện tab "Lớp đang dạy"

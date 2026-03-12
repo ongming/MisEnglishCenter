@@ -6,6 +6,7 @@ import com.center.manager.model.UserAccount;
 import com.center.manager.repo.AdminRepository;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -25,7 +26,8 @@ public class AdminService {
         return tx.runInTransaction(adminRepo::findAllTeachers);
     }
 
-    public Long createTeacher(String fullName, String phone, String email, String specialization, String status) throws Exception {
+    public Long createTeacher(String fullName, String phone, String email, String specialty,
+                               String hireDate, String status) throws Exception {
         String name = safeTrim(fullName);
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Họ tên giáo viên không được để trống.");
@@ -36,7 +38,11 @@ public class AdminService {
             teacher.setFullName(name);
             teacher.setPhone(safeTrim(phone));
             teacher.setEmail(safeTrim(email));
-            teacher.setSpecialization(safeTrim(specialization));
+            teacher.setSpecialty(safeTrim(specialty));
+            String hireDateStr = safeTrim(hireDate);
+            if (!hireDateStr.isEmpty()) {
+                teacher.setHireDate(LocalDate.parse(hireDateStr));
+            }
             teacher.setStatus(safeTrim(status).isEmpty() ? "Active" : safeTrim(status));
 
             adminRepo.saveTeacher(em, teacher);

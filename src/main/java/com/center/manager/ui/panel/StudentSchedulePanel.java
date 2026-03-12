@@ -48,6 +48,10 @@ public class StudentSchedulePanel extends JPanel {
         add(new JScrollPane(tableSchedule), BorderLayout.CENTER);
     }
 
+    public void refreshData() {
+        loadSchedule();
+    }
+
     private void loadSchedule() {
         scheduleModel.setRowCount(0);
         Long studentId = UserSession.getInstance().getStudentId();
@@ -58,6 +62,10 @@ public class StudentSchedulePanel extends JPanel {
             for (Object[] row : schedules) {
                 scheduleModel.addRow(row);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được lịch học: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

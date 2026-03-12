@@ -36,6 +36,10 @@ public class AdminStudentAccountPanel extends JPanel {
         loadStudentsWithoutAccount();
     }
 
+    public void refreshData() {
+        loadStudentsWithoutAccount();
+    }
+
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridBagLayout());
         UITheme.styleCard(form);

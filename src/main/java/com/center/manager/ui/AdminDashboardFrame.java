@@ -1,9 +1,8 @@
 package com.center.manager.ui;
 
-import com.center.manager.ui.panel.AdminStudentAccountPanel;
-import com.center.manager.ui.panel.AdminTeacherAccountPanel;
-import com.center.manager.ui.panel.AdminTeacherCreatePanel;
+import com.center.manager.ui.panel.AdminClassListPanel;
 import com.center.manager.ui.panel.AdminTeacherListPanel;
+import com.center.manager.ui.panel.AdminPaymentPanel;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -51,17 +50,14 @@ public class AdminDashboardFrame extends JFrame {
         sidebar.add(Box.createVerticalStrut(25));
 
         JButton btnTeacherList = createSidebarButton("Danh sách giáo viên");
-        JButton btnAddTeacher = createSidebarButton("Thêm giáo viên");
-        JButton btnCreateTeacherAcc = createSidebarButton("Tạo tài khoản giáo viên");
-        JButton btnCreateStudentAcc = createSidebarButton("Tạo tài khoản học viên");
+        JButton btnClassList = createSidebarButton("Danh sách lớp");
+        JButton btnPayments = createSidebarButton("Thanh toán");
 
         sidebar.add(btnTeacherList);
         sidebar.add(Box.createVerticalStrut(5));
-        sidebar.add(btnAddTeacher);
+        sidebar.add(btnClassList);
         sidebar.add(Box.createVerticalStrut(5));
-        sidebar.add(btnCreateTeacherAcc);
-        sidebar.add(Box.createVerticalStrut(5));
-        sidebar.add(btnCreateStudentAcc);
+        sidebar.add(btnPayments);
 
         sidebar.add(Box.createVerticalGlue());
 
@@ -75,28 +71,30 @@ public class AdminDashboardFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         UITheme.styleRootPanel(contentPanel);
 
-        contentPanel.add(new AdminTeacherListPanel(), "teacher-list");
-        contentPanel.add(new AdminTeacherCreatePanel(), "teacher-create");
-        contentPanel.add(new AdminTeacherAccountPanel(), "teacher-account");
-        contentPanel.add(new AdminStudentAccountPanel(), "student-account");
+        AdminTeacherListPanel teacherListPanel = new AdminTeacherListPanel();
+        AdminClassListPanel classListPanel = new AdminClassListPanel();
+        AdminPaymentPanel paymentPanel = new AdminPaymentPanel();
+
+        contentPanel.add(teacherListPanel, "teacher-list");
+        contentPanel.add(classListPanel, "class-list");
+        contentPanel.add(paymentPanel, "payments");
 
         add(contentPanel, BorderLayout.CENTER);
 
         btnTeacherList.addActionListener(e -> {
             cardLayout.show(contentPanel, "teacher-list");
+            teacherListPanel.refreshData();
             setActiveButton(btnTeacherList);
         });
-        btnAddTeacher.addActionListener(e -> {
-            cardLayout.show(contentPanel, "teacher-create");
-            setActiveButton(btnAddTeacher);
+        btnClassList.addActionListener(e -> {
+            cardLayout.show(contentPanel, "class-list");
+            classListPanel.refreshData();
+            setActiveButton(btnClassList);
         });
-        btnCreateTeacherAcc.addActionListener(e -> {
-            cardLayout.show(contentPanel, "teacher-account");
-            setActiveButton(btnCreateTeacherAcc);
-        });
-        btnCreateStudentAcc.addActionListener(e -> {
-            cardLayout.show(contentPanel, "student-account");
-            setActiveButton(btnCreateStudentAcc);
+        btnPayments.addActionListener(e -> {
+            cardLayout.show(contentPanel, "payments");
+            paymentPanel.refreshData();
+            setActiveButton(btnPayments);
         });
 
         btnLogout.addActionListener(e -> {

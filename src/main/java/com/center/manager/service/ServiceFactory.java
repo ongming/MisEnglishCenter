@@ -26,6 +26,9 @@ public final class ServiceFactory {
     private static final AdminService ADMIN_SERVICE =
             new AdminService(new JpaAdminRepository(), TX);
 
+    private static final PaymentService PAYMENT_SERVICE =
+            new PaymentService(new JpaPaymentRepository(), TX);
+
     private ServiceFactory() {}
 
     public static AuthService authService() { return AUTH_SERVICE; }
@@ -33,4 +36,5 @@ public final class ServiceFactory {
     public static ClassService classService() { return CLASS_SERVICE; }
     public static AttendanceService attendanceService() { return ATTENDANCE_SERVICE; }
     public static AdminService adminService() { return ADMIN_SERVICE; }
+    public static PaymentService paymentService() { return PAYMENT_SERVICE; }
 }

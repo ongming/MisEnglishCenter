@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
@@ -62,6 +62,11 @@ public class TeacherAttendancePanel extends JPanel {
         btnSave.addActionListener(e -> handleSaveAttendance());
         topPanel.add(btnSave);
 
+        JButton btnRefresh = new JButton("Làm mới dữ liệu");
+        UITheme.stylePrimaryButton(btnRefresh);
+        btnRefresh.addActionListener(e -> refreshData());
+        topPanel.add(btnRefresh);
+
         add(topPanel, BorderLayout.NORTH);
 
         // ========== Bảng điểm danh ==========
@@ -97,6 +102,12 @@ public class TeacherAttendancePanel extends JPanel {
         add(tablePanel, BorderLayout.CENTER);
     }
 
+    public void refreshData() {
+        loadClassComboBox();
+        attModel.setRowCount(0);
+        lblTitle.setText("Điểm danh");
+    }
+
     private void loadClassComboBox() {
         cboClass.removeAllItems();
         classIds.clear();
@@ -110,7 +121,11 @@ public class TeacherAttendancePanel extends JPanel {
                 classIds.add((Long) row[0]);
                 cboClass.addItem((String) row[1]); // className
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được danh sách lớp: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void handleLoadAttendance() {
@@ -123,6 +138,15 @@ public class TeacherAttendancePanel extends JPanel {
         String dateStr = txtDate.getText().trim();
         if (dateStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày.");
+            return;
+        }
+
+        try {
+            LocalDate.parse(dateStr);
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Ngày không hợp lệ. Vui lòng nhập đúng định dạng yyyy-MM-dd.",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -153,7 +177,11 @@ public class TeacherAttendancePanel extends JPanel {
                     });
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được dữ liệu điểm danh: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void handleSaveAttendance() {

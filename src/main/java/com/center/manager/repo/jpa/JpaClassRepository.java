@@ -8,6 +8,17 @@ import java.util.List;
 public class JpaClassRepository implements ClassRepository {
 
     @Override
+    public List<Object[]> findAllClasses(EntityManager em) {
+        String jpql = """
+                SELECT c.classId, c.className, COALESCE(co.courseName, 'N/A'),
+                       c.startDate, c.endDate, c.maxStudent, c.status
+                FROM ClassEntity c LEFT JOIN Course co ON c.courseId = co.courseId
+                ORDER BY c.startDate DESC
+                """;
+        return em.createQuery(jpql, Object[].class).getResultList();
+    }
+
+    @Override
     public List<Object[]> findClassesByTeacher(EntityManager em, Long teacherId) {
         String jpql = """
                 SELECT c.classId, c.className, COALESCE(co.courseName, 'N/A'),
@@ -25,7 +36,7 @@ public class JpaClassRepository implements ClassRepository {
     public List<Object[]> findStudentsInClass(EntityManager em, Long classId) {
         String jpql = """
                 SELECT s.studentId, s.fullName, COALESCE(s.phone, ''), COALESCE(s.email, ''),
-                       e.enrollmentDate, e.status
+                       e.enrollmentDate, e.status, COALESCE(e.result, 'NA')
                 FROM Enrollment e JOIN Student s ON e.studentId = s.studentId
                 WHERE e.classId = :classId
                 ORDER BY s.fullName

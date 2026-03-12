@@ -2,6 +2,7 @@ package com.center.manager.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "classes")
@@ -12,28 +13,50 @@ public class ClassEntity {
     @Column(name = "class_id")
     private Long classId;
 
-    @Column(name = "class_name")
+    @Column(name = "class_name", nullable = false)
     private String className;
 
-    @Column(name = "course_id")
+    @Column(name = "course_id", nullable = false)
     private Long courseId;
 
     @Column(name = "teacher_id")
     private Long teacherId;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "max_student")
+    @Column(name = "max_student", nullable = false)
     private Integer maxStudent;
 
-    @Column(name = "status")
+    @Column(name = "room_id")
+    private Long roomId;
+
+    @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public ClassEntity() {}
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        if (status == null) status = "Planned";
+        if (maxStudent == null) maxStudent = 0;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public Long getClassId() { return classId; }
     public void setClassId(Long classId) { this.classId = classId; }
@@ -56,7 +79,13 @@ public class ClassEntity {
     public Integer getMaxStudent() { return maxStudent; }
     public void setMaxStudent(Integer maxStudent) { this.maxStudent = maxStudent; }
 
+    public Long getRoomId() { return roomId; }
+    public void setRoomId(Long roomId) { this.roomId = roomId; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }
 

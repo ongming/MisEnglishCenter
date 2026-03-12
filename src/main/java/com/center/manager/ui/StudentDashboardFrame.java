@@ -15,7 +15,7 @@ public class StudentDashboardFrame extends JFrame {
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
-    private JButton btnProfile, btnClasses, btnSchedule, btnAttendance, btnLogout;
+    private JButton btnProfile, btnClasses, btnSchedule, btnAttendance, btnPayment, btnLogout;
     private JButton currentActiveBtn;
 
     private final PersonService personService = ServiceFactory.personService();
@@ -68,6 +68,7 @@ public class StudentDashboardFrame extends JFrame {
         btnClasses = createSidebarButton("Lớp học");
         btnSchedule = createSidebarButton("Lịch học");
         btnAttendance = createSidebarButton("Điểm danh");
+        btnPayment = createSidebarButton("Thanh toán");
 
         sidebar.add(btnProfile);
         sidebar.add(Box.createVerticalStrut(5));
@@ -76,6 +77,8 @@ public class StudentDashboardFrame extends JFrame {
         sidebar.add(btnSchedule);
         sidebar.add(Box.createVerticalStrut(5));
         sidebar.add(btnAttendance);
+        sidebar.add(Box.createVerticalStrut(5));
+        sidebar.add(btnPayment);
 
         sidebar.add(Box.createVerticalGlue());
 
@@ -90,18 +93,25 @@ public class StudentDashboardFrame extends JFrame {
         contentPanel = new JPanel(cardLayout);
         UITheme.styleRootPanel(contentPanel);
 
+        StudentClassesPanel classesPanel = new StudentClassesPanel();
+        StudentSchedulePanel schedulePanel = new StudentSchedulePanel();
+        StudentAttendancePanel attendancePanel = new StudentAttendancePanel();
+        StudentPaymentPanel paymentPanel = new StudentPaymentPanel();
+
         contentPanel.add(new StudentProfilePanel(), "profile");
-        contentPanel.add(new StudentClassesPanel(), "classes");
-        contentPanel.add(new StudentSchedulePanel(), "schedule");
-        contentPanel.add(new StudentAttendancePanel(), "attendance");
+        contentPanel.add(classesPanel, "classes");
+        contentPanel.add(schedulePanel, "schedule");
+        contentPanel.add(attendancePanel, "attendance");
+        contentPanel.add(paymentPanel, "payment");
 
         add(contentPanel, BorderLayout.CENTER);
 
         // ========== SỰ KIỆN ==========
         btnProfile.addActionListener(e -> { cardLayout.show(contentPanel, "profile"); setActiveButton(btnProfile); });
-        btnClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); setActiveButton(btnClasses); });
-        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); setActiveButton(btnSchedule); });
-        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); setActiveButton(btnAttendance); });
+        btnClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); classesPanel.refreshData(); setActiveButton(btnClasses); });
+        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); schedulePanel.refreshData(); setActiveButton(btnSchedule); });
+        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); attendancePanel.refreshData(); setActiveButton(btnAttendance); });
+        btnPayment.addActionListener(e -> { cardLayout.show(contentPanel, "payment"); paymentPanel.refreshData(); setActiveButton(btnPayment); });
         btnLogout.addActionListener(e -> handleLogout());
 
         // Mặc định hiện tab "Thông tin cá nhân"

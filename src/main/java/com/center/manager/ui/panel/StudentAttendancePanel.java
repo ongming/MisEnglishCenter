@@ -44,6 +44,10 @@ public class StudentAttendancePanel extends JPanel {
         add(new JScrollPane(tableAttendance), BorderLayout.CENTER);
     }
 
+    public void refreshData() {
+        loadAttendance();
+    }
+
     private void loadAttendance() {
         attModel.setRowCount(0);
         Long studentId = UserSession.getInstance().getStudentId();
@@ -54,6 +58,10 @@ public class StudentAttendancePanel extends JPanel {
             for (Object[] row : attendances) {
                 attModel.addRow(row);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được lịch sử điểm danh: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

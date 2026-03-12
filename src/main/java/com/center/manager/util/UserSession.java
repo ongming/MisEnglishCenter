@@ -5,7 +5,7 @@ package com.center.manager.util;
  */
 public class UserSession {
 
-    private static UserSession instance;
+    private static final UserSession instance = new UserSession();
 
     private Long userId;
     private String username;
@@ -17,9 +17,6 @@ public class UserSession {
     private UserSession() {}
 
     public static UserSession getInstance() {
-        if (instance == null) {
-            instance = new UserSession();
-        }
         return instance;
     }
 

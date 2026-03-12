@@ -16,7 +16,8 @@ public class JpaAdminRepository implements AdminRepository {
                        t.fullName,
                        COALESCE(t.phone, ''),
                        COALESCE(t.email, ''),
-                       COALESCE(t.specialization, ''),
+                       COALESCE(t.specialty, ''),
+                       t.hireDate,
                        COALESCE(t.status, '')
                 FROM Teacher t
                 ORDER BY t.teacherId DESC

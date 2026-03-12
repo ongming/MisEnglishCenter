@@ -18,8 +18,11 @@ CREATE TABLE IF NOT EXISTS teachers (
     full_name    VARCHAR(100) NOT NULL,
     phone        VARCHAR(20),
     email        VARCHAR(100),
-    specialization VARCHAR(200),
-    status       VARCHAR(20) DEFAULT 'Active'
+    specialty    VARCHAR(200),
+    hire_date    DATE,
+    status       VARCHAR(20) DEFAULT 'Active',
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- =====================================================
@@ -34,7 +37,9 @@ CREATE TABLE IF NOT EXISTS students (
     email             VARCHAR(100),
     address           VARCHAR(255),
     registration_date DATE DEFAULT (CURRENT_DATE),
-    status            VARCHAR(20) DEFAULT 'Active'
+    status            VARCHAR(20) DEFAULT 'Active',
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- =====================================================
@@ -44,9 +49,13 @@ CREATE TABLE IF NOT EXISTS courses (
     course_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
     course_name    VARCHAR(150) NOT NULL,
     description    TEXT,
-    duration_hours INT,
-    tuition_fee    DOUBLE,
-    status         VARCHAR(20) DEFAULT 'Active'
+    level          VARCHAR(50),
+    duration       INT,
+    duration_unit  VARCHAR(20) DEFAULT 'Week',
+    fee            DECIMAL(15,2) DEFAULT 0.00,
+    status         VARCHAR(20) DEFAULT 'Active',
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- =====================================================
@@ -55,12 +64,15 @@ CREATE TABLE IF NOT EXISTS courses (
 CREATE TABLE IF NOT EXISTS classes (
     class_id    BIGINT AUTO_INCREMENT PRIMARY KEY,
     class_name  VARCHAR(100) NOT NULL,
-    course_id   BIGINT,
+    course_id   BIGINT NOT NULL,
     teacher_id  BIGINT,
-    start_date  DATE,
+    start_date  DATE NOT NULL,
     end_date    DATE,
     max_student INT DEFAULT 30,
-    status      VARCHAR(20) DEFAULT 'Active',
+    room_id     BIGINT,
+    status      VARCHAR(20) DEFAULT 'Planned',
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (course_id) REFERENCES courses(course_id),
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 ) ENGINE=InnoDB;
@@ -73,25 +85,47 @@ CREATE TABLE IF NOT EXISTS enrollments (
     student_id      BIGINT NOT NULL,
     class_id        BIGINT NOT NULL,
     enrollment_date DATE DEFAULT (CURRENT_DATE),
-    status          VARCHAR(20) DEFAULT 'Active',
+    status          VARCHAR(20) DEFAULT 'Enrolled',
+    result          VARCHAR(20) DEFAULT 'NA',
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (class_id) REFERENCES classes(class_id)
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- 6. Bảng SCHEDULES (Lịch học)
+-- 6. Bảng PAYMENTS (Thanh toán)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS payments (
+    payment_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    student_id     BIGINT NOT NULL,
+    enrollment_id  BIGINT,
+    amount         DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    payment_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_method VARCHAR(50) DEFAULT 'Cash',
+    status         VARCHAR(20) DEFAULT 'Completed',
+    reference_code VARCHAR(100),
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (enrollment_id) REFERENCES enrollments(enrollment_id)
+) ENGINE=InnoDB;
+
+-- =====================================================
+-- 7. Bảng SCHEDULES (Lịch học)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS schedules (
     schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     class_id    BIGINT NOT NULL,
     study_date  DATE NOT NULL,
-    start_time  TIME,
-    end_time    TIME,
+    start_time  TIME NOT NULL,
+    end_time    TIME NOT NULL,
+    room_id     BIGINT,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (class_id) REFERENCES classes(class_id)
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- 7. Bảng ATTENDANCES (Điểm danh)
+-- 8. Bảng ATTENDANCES (Điểm danh)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS attendances (
     attendance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -100,12 +134,13 @@ CREATE TABLE IF NOT EXISTS attendances (
     attend_date   DATE NOT NULL,
     status        VARCHAR(20) DEFAULT 'Present',
     note          VARCHAR(255),
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (class_id) REFERENCES classes(class_id)
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- 8. Bảng USER_ACCOUNTS (Tài khoản đăng nhập)
+-- 9. Bảng USER_ACCOUNTS (Tài khoản đăng nhập)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS user_accounts (
     user_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -116,6 +151,8 @@ CREATE TABLE IF NOT EXISTS user_accounts (
     student_id    BIGINT,
     staff_id      BIGINT,
     is_active     TINYINT(1) DEFAULT 1,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
     FOREIGN KEY (student_id) REFERENCES students(student_id)
 ) ENGINE=InnoDB;
@@ -128,10 +165,10 @@ CREATE TABLE IF NOT EXISTS user_accounts (
 -- -------------------------------------------------------
 -- Giảng viên
 -- -------------------------------------------------------
-INSERT INTO teachers (full_name, phone, email, specialization, status) VALUES
-('Nguyễn Văn An',    '0901111111', 'an.nguyen@email.com',    'IELTS, TOEFL',     'Active'),
-('Trần Thị Bích',    '0902222222', 'bich.tran@email.com',    'Giao tiếp',        'Active'),
-('Lê Hoàng Cường',   '0903333333', 'cuong.le@email.com',     'Ngữ pháp, TOEIC',  'Active');
+INSERT INTO teachers (full_name, phone, email, specialty, hire_date, status) VALUES
+('Nguyễn Văn An',    '0901111111', 'an.nguyen@email.com',    'IELTS, TOEFL',     '2023-01-15', 'Active'),
+('Trần Thị Bích',    '0902222222', 'bich.tran@email.com',    'Giao tiếp',        '2023-03-01', 'Active'),
+('Lê Hoàng Cường',   '0903333333', 'cuong.le@email.com',     'Ngữ pháp, TOEIC',  '2023-06-10', 'Active');
 
 -- -------------------------------------------------------
 -- Sinh viên
@@ -146,39 +183,54 @@ INSERT INTO students (full_name, date_of_birth, gender, phone, email, address, r
 -- -------------------------------------------------------
 -- Khóa học
 -- -------------------------------------------------------
-INSERT INTO courses (course_name, description, duration_hours, tuition_fee, status) VALUES
-('IELTS Foundation',     'Khóa luyện thi IELTS cơ bản (target 5.0-5.5)',  60, 5000000, 'Active'),
-('IELTS Advanced',       'Khóa luyện thi IELTS nâng cao (target 6.5-7.0)', 80, 7000000, 'Active'),
-('TOEIC 450+',           'Luyện thi TOEIC mục tiêu 450+',                  48, 3500000, 'Active'),
-('English Communication','Tiếng Anh giao tiếp hàng ngày',                  40, 3000000, 'Active');
+INSERT INTO courses (course_name, description, level, duration, duration_unit, fee, status) VALUES
+('IELTS Foundation',     'Khóa luyện thi IELTS cơ bản (target 5.0-5.5)',  'Beginner',      12, 'Week', 5000000.00, 'Active'),
+('IELTS Advanced',       'Khóa luyện thi IELTS nâng cao (target 6.5-7.0)', 'Advanced',      16, 'Week', 7000000.00, 'Active'),
+('TOEIC 450+',           'Luyện thi TOEIC mục tiêu 450+',                  'Intermediate',  10, 'Week', 3500000.00, 'Active'),
+('English Communication','Tiếng Anh giao tiếp hàng ngày',                  'Beginner',       8, 'Week', 3000000.00, 'Active');
 
 -- -------------------------------------------------------
 -- Lớp học
 -- -------------------------------------------------------
 INSERT INTO classes (class_name, course_id, teacher_id, start_date, end_date, max_student, status) VALUES
-('IELTS-F-01',  1, 1, '2025-03-01', '2025-05-31', 25, 'Active'),
-('IELTS-A-01',  2, 1, '2025-04-01', '2025-07-31', 20, 'Active'),
-('TOEIC-01',    3, 3, '2025-03-15', '2025-05-15', 30, 'Active'),
-('COMM-01',     4, 2, '2025-03-10', '2025-05-10', 20, 'Active');
+('IELTS-F-01',  1, 1, '2025-03-01', '2025-05-31', 25, 'Ongoing'),
+('IELTS-A-01',  2, 1, '2025-04-01', '2025-07-31', 20, 'Ongoing'),
+('TOEIC-01',    3, 3, '2025-03-15', '2025-05-15', 30, 'Ongoing'),
+('COMM-01',     4, 2, '2025-03-10', '2025-05-10', 20, 'Ongoing');
 
 -- -------------------------------------------------------
 -- Ghi danh (enrollments)
 -- -------------------------------------------------------
-INSERT INTO enrollments (student_id, class_id, enrollment_date, status) VALUES
+INSERT INTO enrollments (student_id, class_id, enrollment_date, status, result) VALUES
 -- Lớp IELTS-F-01
-(1, 1, '2025-02-20', 'Active'),
-(2, 1, '2025-02-22', 'Active'),
-(3, 1, '2025-02-25', 'Active'),
+(1, 1, '2025-02-20', 'Enrolled', 'NA'),
+(2, 1, '2025-02-22', 'Enrolled', 'NA'),
+(3, 1, '2025-02-25', 'Enrolled', 'NA'),
 -- Lớp IELTS-A-01
-(3, 2, '2025-03-20', 'Active'),
-(4, 2, '2025-03-22', 'Active'),
+(3, 2, '2025-03-20', 'Enrolled', 'NA'),
+(4, 2, '2025-03-22', 'Enrolled', 'NA'),
 -- Lớp TOEIC-01
-(1, 3, '2025-03-10', 'Active'),
-(5, 3, '2025-03-12', 'Active'),
+(1, 3, '2025-03-10', 'Enrolled', 'NA'),
+(5, 3, '2025-03-12', 'Enrolled', 'NA'),
 -- Lớp COMM-01
-(2, 4, '2025-03-05', 'Active'),
-(4, 4, '2025-03-07', 'Active'),
-(5, 4, '2025-03-08', 'Active');
+(2, 4, '2025-03-05', 'Enrolled', 'NA'),
+(4, 4, '2025-03-07', 'Enrolled', 'NA'),
+(5, 4, '2025-03-08', 'Enrolled', 'NA');
+
+-- -------------------------------------------------------
+-- Thanh toán (payments) — dữ liệu mẫu
+-- -------------------------------------------------------
+INSERT INTO payments (student_id, enrollment_id, amount, payment_method, status) VALUES
+(1, 1, 5000000.00, 'Cash', 'Completed'),
+(2, 2, 5000000.00, 'Transfer', 'Completed'),
+(3, 3, 5000000.00, 'Cash', 'Completed'),
+(3, 4, 7000000.00, 'Transfer', 'Completed'),
+(4, 5, 7000000.00, 'Cash', 'Completed'),
+(1, 6, 3500000.00, 'Cash', 'Completed'),
+(5, 7, 3500000.00, 'Transfer', 'Completed'),
+(2, 8, 3000000.00, 'Cash', 'Completed'),
+(4, 9, 3000000.00, 'Cash', 'Completed'),
+(5, 10, 3000000.00, 'Transfer', 'Completed');
 
 -- -------------------------------------------------------
 -- Lịch học (schedules) — một số buổi mẫu

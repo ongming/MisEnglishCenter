@@ -18,6 +18,7 @@ public class AdminTeacherCreatePanel extends JPanel {
     private JTextField txtPhone;
     private JTextField txtEmail;
     private JTextField txtSpecialization;
+    private JTextField txtHireDate;
     private JComboBox<String> cboStatus;
 
     public AdminTeacherCreatePanel() {
@@ -44,6 +45,7 @@ public class AdminTeacherCreatePanel extends JPanel {
         txtPhone = new JTextField(28);
         txtEmail = new JTextField(28);
         txtSpecialization = new JTextField(28);
+        txtHireDate = new JTextField(28);
         cboStatus = new JComboBox<>(new String[]{"Active", "Inactive"});
 
         int row = 0;
@@ -51,6 +53,7 @@ public class AdminTeacherCreatePanel extends JPanel {
         row = addRow(form, gbc, row, "Số điện thoại:", txtPhone);
         row = addRow(form, gbc, row, "Email:", txtEmail);
         row = addRow(form, gbc, row, "Chuyên môn:", txtSpecialization);
+        row = addRow(form, gbc, row, "Ngày tuyển (yyyy-MM-dd):", txtHireDate);
         row = addRow(form, gbc, row, "Trạng thái:", cboStatus);
 
         JButton btnCreate = new JButton("Thêm giáo viên");
@@ -84,6 +87,7 @@ public class AdminTeacherCreatePanel extends JPanel {
                     txtPhone.getText(),
                     txtEmail.getText(),
                     txtSpecialization.getText(),
+                    txtHireDate.getText(),
                     (String) cboStatus.getSelectedItem()
             );
 
@@ -95,6 +99,7 @@ public class AdminTeacherCreatePanel extends JPanel {
             txtPhone.setText("");
             txtEmail.setText("");
             txtSpecialization.setText("");
+            txtHireDate.setText("");
             cboStatus.setSelectedIndex(0);
 
         } catch (Exception e) {

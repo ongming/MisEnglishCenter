@@ -48,6 +48,10 @@ public class StudentClassesPanel extends JPanel {
         add(new JScrollPane(tableClasses), BorderLayout.CENTER);
     }
 
+    public void refreshData() {
+        loadClasses();
+    }
+
     private void loadClasses() {
         classModel.setRowCount(0);
         Long studentId = UserSession.getInstance().getStudentId();
@@ -58,6 +62,10 @@ public class StudentClassesPanel extends JPanel {
             for (Object[] row : classes) {
                 classModel.addRow(row);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được danh sách lớp: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

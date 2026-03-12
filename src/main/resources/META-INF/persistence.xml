@@ -17,6 +17,7 @@
         <class>com.center.manager.model.Enrollment</class>
         <class>com.center.manager.model.Schedule</class>
         <class>com.center.manager.model.Attendance</class>
+        <class>com.center.manager.model.Payment</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

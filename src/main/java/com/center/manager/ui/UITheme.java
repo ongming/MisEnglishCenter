@@ -78,7 +78,7 @@ public final class UITheme {
 
     public static void stylePrimaryButton(JButton btn) {
         btn.setBackground(PRIMARY);
-        btn.setForeground(UITheme.PRIMARY);
+        btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(8, 14, 8, 14));
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));

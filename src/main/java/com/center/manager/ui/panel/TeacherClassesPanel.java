@@ -61,7 +61,7 @@ public class TeacherClassesPanel extends JPanel {
         UITheme.styleSectionTitle(lblStudentTitle);
 
         studentModel = new DefaultTableModel(
-                new String[]{"ID", "Họ và tên", "SĐT", "Email", "Ngày ghi danh", "Trạng thái"}, 0) {
+                new String[]{"ID", "Họ và tên", "SĐT", "Email", "Ngày ghi danh", "Trạng thái", "Kết quả"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) { return false; }
         };
@@ -97,6 +97,12 @@ public class TeacherClassesPanel extends JPanel {
         });
     }
 
+    public void refreshData() {
+        loadMyClasses();
+        studentModel.setRowCount(0);
+        lblStudentTitle.setText("Danh sách học viên — (chọn lớp ở trên)");
+    }
+
     private void loadMyClasses() {
         classModel.setRowCount(0);
         Long teacherId = UserSession.getInstance().getTeacherId();
@@ -107,7 +113,11 @@ public class TeacherClassesPanel extends JPanel {
             for (Object[] row : classes) {
                 classModel.addRow(row);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được danh sách lớp: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void loadStudentsInClass(Long classId, String className) {
@@ -119,7 +129,11 @@ public class TeacherClassesPanel extends JPanel {
             for (Object[] row : students) {
                 studentModel.addRow(row);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tải được danh sách học viên: " + e.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
 
