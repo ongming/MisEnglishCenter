@@ -23,11 +23,14 @@ public final class ServiceFactory {
     private static final AttendanceService ATTENDANCE_SERVICE =
             new AttendanceService(new JpaAttendanceRepository(), TX);
 
+    private static final AdminService ADMIN_SERVICE =
+            new AdminService(new JpaAdminRepository(), TX);
+
     private ServiceFactory() {}
 
     public static AuthService authService() { return AUTH_SERVICE; }
     public static PersonService personService() { return PERSON_SERVICE; }
     public static ClassService classService() { return CLASS_SERVICE; }
     public static AttendanceService attendanceService() { return ATTENDANCE_SERVICE; }
+    public static AdminService adminService() { return ADMIN_SERVICE; }
 }
-

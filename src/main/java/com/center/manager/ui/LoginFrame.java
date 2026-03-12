@@ -30,17 +30,21 @@ public class LoginFrame extends JFrame {
     }
 
     private void initComponents() {
-        // Panel chính
+        // Nền tổng thể
+        JPanel page = new JPanel(new GridBagLayout());
+        UITheme.styleRootPanel(page);
+        setContentPane(page);
+
+        // Card đăng nhập
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        UITheme.styleCard(mainPanel);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(9, 8, 9, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Tiêu đề
         JLabel lblTitle = new JLabel("MIS English Center", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 20));
-        lblTitle.setForeground(new Color(41, 128, 185));
+        UITheme.styleTitle(lblTitle);
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         mainPanel.add(lblTitle, gbc);
 
@@ -60,22 +64,29 @@ public class LoginFrame extends JFrame {
 
         // Error label
         lblError = new JLabel(" ");
-        lblError.setForeground(Color.RED);
-        lblError.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblError.setForeground(UITheme.DANGER);
+        lblError.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         gbc.gridy = 3; gbc.gridx = 0; gbc.gridwidth = 2;
         mainPanel.add(lblError, gbc);
 
         // Nút đăng nhập
         btnLogin = new JButton("ĐĂNG NHẬP");
-        btnLogin.setFont(new Font("Arial", Font.BOLD, 14));
-        btnLogin.setBackground(new Color(41, 128, 185));
-        btnLogin.setForeground(Color.WHITE);
-        btnLogin.setFocusPainted(false);
-        btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        UITheme.stylePrimaryButton(btnLogin);
         gbc.gridy = 4;
         mainPanel.add(btnLogin, gbc);
 
-        add(mainPanel);
+        // Label hướng dẫn liên hệ nếu chưa có tài khoản
+        JLabel lblContact = new JLabel("Bạn chưa có tài khoản? Hãy liên hệ với Giảng viên hoặc Admin", SwingConstants.CENTER);
+        lblContact.setFont(new Font("Segoe UI", Font.ITALIC, 11)); // Font chữ nhỏ hơn và in nghiêng cho tinh tế
+        lblContact.setForeground(Color.GRAY); // Màu xám để không làm xao nhãng nút chính
+
+        gbc.gridy = 5; // Hàng tiếp theo dưới nút Đăng nhập
+        gbc.gridx = 0;
+        gbc.gridwidth = 2; // Trải dài qua cả 2 cột (label và input)
+        gbc.insets = new Insets(7, 8, 5, 8); // Tăng khoảng cách phía trên (15) để tách rời khỏi nút
+        mainPanel.add(lblContact, gbc);
+
+        page.add(mainPanel);
 
         // === Sự kiện ===
         btnLogin.addActionListener(e -> handleLogin());
@@ -137,6 +148,9 @@ public class LoginFrame extends JFrame {
         dispose(); // Đóng cửa sổ Login
 
         switch (role) {
+            case "Admin":
+                new AdminDashboardFrame().setVisible(true);
+                break;
             case "Teacher":
                 new TeacherDashboardFrame().setVisible(true);
                 break;

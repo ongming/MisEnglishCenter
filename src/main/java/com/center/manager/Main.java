@@ -2,6 +2,7 @@ package com.center.manager;
 
 import com.center.manager.db.Jpa;
 import com.center.manager.ui.LoginFrame;
+import com.center.manager.ui.UITheme;
 
 import javax.swing.*;
 
@@ -17,6 +18,7 @@ public class Main {
         // Look and Feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UITheme.installGlobalDefaults();
         } catch (Exception ignored) {}
 
         // Khởi chạy giao diện Swing trên EDT

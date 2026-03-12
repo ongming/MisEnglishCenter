@@ -38,7 +38,7 @@ public class TeacherDashboardFrame extends JFrame {
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setPreferredSize(new Dimension(220, 0));
-        sidebar.setBackground(new Color(44, 62, 80));
+        UITheme.styleSidebar(sidebar);
         sidebar.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
 
         // Tên giảng viên
@@ -52,14 +52,14 @@ public class TeacherDashboardFrame extends JFrame {
         }
 
         JLabel lblName = new JLabel(displayName);
-        lblName.setFont(new Font("Arial", Font.BOLD, 16));
+        lblName.setFont(new Font("Segoe UI", Font.BOLD, 16));
         lblName.setForeground(Color.WHITE);
         lblName.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidebar.add(lblName);
 
         JLabel lblRole = new JLabel("Giảng viên");
-        lblRole.setFont(new Font("Arial", Font.PLAIN, 12));
-        lblRole.setForeground(new Color(149, 165, 166));
+        lblRole.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblRole.setForeground(UITheme.TEXT_MUTED);
         lblRole.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidebar.add(lblRole);
 
@@ -79,7 +79,7 @@ public class TeacherDashboardFrame extends JFrame {
         sidebar.add(Box.createVerticalGlue());
 
         btnLogout = createSidebarButton("Đăng xuất");
-        btnLogout.setForeground(new Color(231, 76, 60));
+        btnLogout.setForeground(UITheme.DANGER);
         sidebar.add(btnLogout);
 
         add(sidebar, BorderLayout.WEST);
@@ -87,6 +87,7 @@ public class TeacherDashboardFrame extends JFrame {
         // ========== CONTENT AREA ==========
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
+        UITheme.styleRootPanel(contentPanel);
 
         contentPanel.add(new TeacherClassesPanel(), "classes");
         contentPanel.add(new TeacherSchedulePanel(), "schedule");
@@ -106,11 +107,7 @@ public class TeacherDashboardFrame extends JFrame {
 
     private JButton createSidebarButton(String text) {
         JButton btn = new JButton(text);
-        btn.setFont(new Font("Arial", Font.PLAIN, 14));
-        btn.setForeground(Color.WHITE);
-        btn.setBackground(new Color(44, 62, 80));
-        btn.setBorderPainted(false);
-        btn.setFocusPainted(false);
+        UITheme.styleSidebarButton(btn);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setMaximumSize(new Dimension(200, 40));
         btn.setPreferredSize(new Dimension(200, 40));
@@ -121,9 +118,9 @@ public class TeacherDashboardFrame extends JFrame {
 
     private void setActiveButton(JButton btn) {
         if (currentActiveBtn != null) {
-            currentActiveBtn.setBackground(new Color(44, 62, 80));
+            UITheme.setSidebarButtonActive(currentActiveBtn, false);
         }
-        btn.setBackground(new Color(52, 73, 94));
+        UITheme.setSidebarButtonActive(btn, true);
         currentActiveBtn = btn;
     }
 
@@ -133,4 +130,3 @@ public class TeacherDashboardFrame extends JFrame {
         new LoginFrame().setVisible(true);
     }
 }
-

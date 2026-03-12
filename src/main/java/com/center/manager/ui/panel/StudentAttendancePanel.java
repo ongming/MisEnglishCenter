@@ -2,6 +2,7 @@ package com.center.manager.ui.panel;
 
 import com.center.manager.service.AttendanceService;
 import com.center.manager.service.ServiceFactory;
+import com.center.manager.ui.UITheme;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -22,13 +23,14 @@ public class StudentAttendancePanel extends JPanel {
     public StudentAttendancePanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        UITheme.styleRootPanel(this);
         initComponents();
         loadAttendance();
     }
 
     private void initComponents() {
         JLabel lblTitle = new JLabel("Lịch sử điểm danh");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        UITheme.styleSectionTitle(lblTitle);
         add(lblTitle, BorderLayout.NORTH);
 
         attModel = new DefaultTableModel(
@@ -37,7 +39,7 @@ public class StudentAttendancePanel extends JPanel {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tableAttendance = new JTable(attModel);
-        tableAttendance.setRowHeight(28);
+        UITheme.styleTable(tableAttendance);
 
         add(new JScrollPane(tableAttendance), BorderLayout.CENTER);
     }
@@ -55,4 +57,3 @@ public class StudentAttendancePanel extends JPanel {
         } catch (Exception e) { e.printStackTrace(); }
     }
 }
-

@@ -2,6 +2,7 @@ package com.center.manager.ui.panel;
 
 import com.center.manager.service.PersonService;
 import com.center.manager.service.ServiceFactory;
+import com.center.manager.ui.UITheme;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -17,12 +18,13 @@ public class StudentProfilePanel extends JPanel {
     public StudentProfilePanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        UITheme.styleRootPanel(this);
         initComponents();
     }
 
     private void initComponents() {
         JLabel lblTitle = new JLabel("Thông tin cá nhân");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        UITheme.styleSectionTitle(lblTitle);
         add(lblTitle, BorderLayout.NORTH);
 
         Long studentId = UserSession.getInstance().getStudentId();
@@ -42,6 +44,7 @@ public class StudentProfilePanel extends JPanel {
 
         // profile: [studentId, fullName, dateOfBirth, gender, phone, email, address, registrationDate, status]
         JPanel infoPanel = new JPanel(new GridBagLayout());
+        UITheme.styleCard(infoPanel);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 10, 8, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -64,13 +67,13 @@ public class StudentProfilePanel extends JPanel {
             gbc.gridy = i;
             gbc.weightx = 0;
             JLabel lbl = new JLabel(fields[i][0]);
-            lbl.setFont(new Font("Arial", Font.BOLD, 14));
+            lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
             infoPanel.add(lbl, gbc);
 
             gbc.gridx = 1;
             gbc.weightx = 1;
             JLabel val = new JLabel(fields[i][1]);
-            val.setFont(new Font("Arial", Font.PLAIN, 14));
+            val.setFont(new Font("Segoe UI", Font.PLAIN, 14));
             infoPanel.add(val, gbc);
         }
 

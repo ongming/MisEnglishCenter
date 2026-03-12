@@ -2,6 +2,7 @@ package com.center.manager.ui.panel;
 
 import com.center.manager.service.ClassService;
 import com.center.manager.service.ServiceFactory;
+import com.center.manager.ui.UITheme;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -22,13 +23,14 @@ public class StudentClassesPanel extends JPanel {
     public StudentClassesPanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        UITheme.styleRootPanel(this);
         initComponents();
         loadClasses();
     }
 
     private void initComponents() {
         JLabel lblTitle = new JLabel("Lớp học của tôi");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        UITheme.styleSectionTitle(lblTitle);
         add(lblTitle, BorderLayout.NORTH);
 
         classModel = new DefaultTableModel(
@@ -37,7 +39,7 @@ public class StudentClassesPanel extends JPanel {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tableClasses = new JTable(classModel);
-        tableClasses.setRowHeight(28);
+        UITheme.styleTable(tableClasses);
         // Ẩn cột ID
         tableClasses.getColumnModel().getColumn(0).setMinWidth(0);
         tableClasses.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -59,4 +61,3 @@ public class StudentClassesPanel extends JPanel {
         } catch (Exception e) { e.printStackTrace(); }
     }
 }
-

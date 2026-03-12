@@ -2,6 +2,7 @@ package com.center.manager.ui.panel;
 
 import com.center.manager.service.ClassService;
 import com.center.manager.service.ServiceFactory;
+import com.center.manager.ui.UITheme;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class TeacherClassesPanel extends JPanel {
     public TeacherClassesPanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        UITheme.styleRootPanel(this);
         initComponents();
         loadMyClasses();
     }
@@ -32,7 +34,7 @@ public class TeacherClassesPanel extends JPanel {
     private void initComponents() {
         // ========== Bảng LỚP (trên) ==========
         JLabel lblTitle = new JLabel("Lớp đang dạy");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        UITheme.styleSectionTitle(lblTitle);
 
         classModel = new DefaultTableModel(
                 new String[]{"ID", "Tên lớp", "Khóa học", "Bắt đầu", "Kết thúc", "Sĩ số max", "Trạng thái"}, 0) {
@@ -40,7 +42,7 @@ public class TeacherClassesPanel extends JPanel {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tableClasses = new JTable(classModel);
-        tableClasses.setRowHeight(28);
+        UITheme.styleTable(tableClasses);
         tableClasses.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         // Ẩn cột ID
         tableClasses.getColumnModel().getColumn(0).setMinWidth(0);
@@ -56,7 +58,7 @@ public class TeacherClassesPanel extends JPanel {
 
         // ========== Bảng HỌC VIÊN (dưới) ==========
         lblStudentTitle = new JLabel("Danh sách học viên — (chọn lớp ở trên)");
-        lblStudentTitle.setFont(new Font("Arial", Font.BOLD, 14));
+        UITheme.styleSectionTitle(lblStudentTitle);
 
         studentModel = new DefaultTableModel(
                 new String[]{"ID", "Họ và tên", "SĐT", "Email", "Ngày ghi danh", "Trạng thái"}, 0) {
@@ -64,7 +66,7 @@ public class TeacherClassesPanel extends JPanel {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tableStudents = new JTable(studentModel);
-        tableStudents.setRowHeight(28);
+        UITheme.styleTable(tableStudents);
         // Ẩn cột ID
         tableStudents.getColumnModel().getColumn(0).setMinWidth(0);
         tableStudents.getColumnModel().getColumn(0).setMaxWidth(0);

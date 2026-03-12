@@ -4,6 +4,7 @@ import com.center.manager.service.AttendanceService;
 import com.center.manager.service.ClassService;
 import com.center.manager.service.ServiceFactory;
 import com.center.manager.util.UserSession;
+import com.center.manager.ui.UITheme;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -32,6 +33,7 @@ public class TeacherAttendancePanel extends JPanel {
     public TeacherAttendancePanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        UITheme.styleRootPanel(this);
         initComponents();
         loadClassComboBox();
     }
@@ -39,6 +41,7 @@ public class TeacherAttendancePanel extends JPanel {
     private void initComponents() {
         // ========== Panel trên: chọn lớp + ngày ==========
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        UITheme.styleCard(topPanel);
 
         topPanel.add(new JLabel("Lớp:"));
         cboClass = new JComboBox<>();
@@ -50,12 +53,12 @@ public class TeacherAttendancePanel extends JPanel {
         topPanel.add(txtDate);
 
         JButton btnLoad = new JButton("Tải danh sách");
+        UITheme.stylePrimaryButton(btnLoad);
         btnLoad.addActionListener(e -> handleLoadAttendance());
         topPanel.add(btnLoad);
 
         JButton btnSave = new JButton("Lưu điểm danh");
-        btnSave.setBackground(new Color(39, 174, 96));
-        btnSave.setForeground(Color.WHITE);
+        UITheme.stylePrimaryButton(btnSave);
         btnSave.addActionListener(e -> handleSaveAttendance());
         topPanel.add(btnSave);
 
@@ -63,7 +66,7 @@ public class TeacherAttendancePanel extends JPanel {
 
         // ========== Bảng điểm danh ==========
         lblTitle = new JLabel("Điểm danh");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 14));
+        UITheme.styleSectionTitle(lblTitle);
 
         // Cột: attendanceId (ẩn), studentId (ẩn), Họ tên, Trạng thái (editable combobox), Ghi chú (editable)
         attModel = new DefaultTableModel(
@@ -74,7 +77,7 @@ public class TeacherAttendancePanel extends JPanel {
             }
         };
         tableAttendance = new JTable(attModel);
-        tableAttendance.setRowHeight(28);
+        UITheme.styleTable(tableAttendance);
 
         // Ẩn cột AttID, StudentID
         tableAttendance.getColumnModel().getColumn(0).setMinWidth(0);
