@@ -1,6 +1,7 @@
 package com.center.manager.service.impl;
 
 import com.center.manager.db.TransactionManager;
+import com.center.manager.model.ClassEntity;
 import com.center.manager.model.Teacher;
 import com.center.manager.model.UserAccount;
 import com.center.manager.repo.AdminRepository;
@@ -74,6 +75,43 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void createStudentAccount(Long studentId, String username, String rawPassword) throws Exception {
         createAccount("Student", null, studentId, username, rawPassword);
+    }
+
+    /**
+     * Tao lop hoc moi cho admin voi cac validate co ban.
+     */
+    @Override
+    public Long createClass(String className, Long courseId, Long teacherId, String startDate,
+                            String endDate, Integer maxStudent, Long roomId) throws Exception {
+        if (safeTrim(className).isEmpty()) {
+            throw new IllegalArgumentException("Ten lop hoc khong duoc de trong.");
+        }
+        if (courseId == null) {
+            throw new IllegalArgumentException("Phai chon khoa hoc.");
+        }
+        if (safeTrim(startDate).isEmpty()) {
+            throw new IllegalArgumentException("Phai nhap ngay bat dau.");
+        }
+        if (maxStudent == null || maxStudent <= 0) {
+            throw new IllegalArgumentException("So luong hoc vien toi da phai lon hon 0.");
+        }
+
+        return tx.runInTransaction(em -> {
+            ClassEntity clazz = new ClassEntity();
+            clazz.setClassName(className.trim());
+            clazz.setCourseId(courseId);
+            clazz.setTeacherId(teacherId);
+            clazz.setStartDate(LocalDate.parse(startDate));
+            String endDateValue = safeTrim(endDate);
+            if (!endDateValue.isEmpty()) {
+                clazz.setEndDate(LocalDate.parse(endDateValue));
+            }
+            clazz.setMaxStudent(maxStudent);
+            clazz.setRoomId(roomId);
+            clazz.setStatus("Planned");
+            em.persist(clazz);
+            return clazz.getClassId();
+        });
     }
 
     /**

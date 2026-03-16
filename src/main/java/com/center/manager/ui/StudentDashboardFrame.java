@@ -9,15 +9,24 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Dashboard Sinh viên.
+ * Giao diện chính (dashboard) cho học viên.
+ * Sidebar chuyển tab, content hiển thị các panel chức năng:
+ * - Hồ sơ cá nhân
+ * - Danh sách lớp đã đăng ký
+ * - Lịch học
+ * - Điểm danh
+ * - Thanh toán
  */
 public class StudentDashboardFrame extends JFrame {
-
+    // Panel chứa nội dung các tab
     private JPanel contentPanel;
+    // Layout chuyển tab
     private CardLayout cardLayout;
+    // Các nút sidebar
     private JButton btnProfile, btnClasses, btnSchedule, btnAttendance, btnPayment, btnLogout;
+    // Nút đang active
     private JButton currentActiveBtn;
-
+    // Service lấy thông tin học viên
     private final PersonService personService = ServiceFactory.personService();
 
     public StudentDashboardFrame() {
@@ -25,10 +34,13 @@ public class StudentDashboardFrame extends JFrame {
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        // Khởi tạo giao diện
         initComponents();
     }
 
+    /**
+     * Khởi tạo các thành phần giao diện (sidebar, content, ...)
+     */
     private void initComponents() {
         setLayout(new BorderLayout());
 
@@ -118,6 +130,11 @@ public class StudentDashboardFrame extends JFrame {
         setActiveButton(btnProfile);
     }
 
+    /**
+     * Tạo nút cho sidebar
+     * @param text Text hiển thị trên nút
+     * @return JButton đã được cấu hình
+     */
     private JButton createSidebarButton(String text) {
         JButton btn = new JButton(text);
         UITheme.styleSidebarButton(btn);
@@ -129,6 +146,10 @@ public class StudentDashboardFrame extends JFrame {
         return btn;
     }
 
+    /**
+     * Đặt nút đang hoạt động (được chọn)
+     * @param btn Nút cần đặt làm nút hoạt động
+     */
     private void setActiveButton(JButton btn) {
         if (currentActiveBtn != null) {
             UITheme.setSidebarButtonActive(currentActiveBtn, false);
@@ -137,6 +158,9 @@ public class StudentDashboardFrame extends JFrame {
         currentActiveBtn = btn;
     }
 
+    /**
+     * Xử lý sự kiện đăng xuất
+     */
     private void handleLogout() {
         UserSession.getInstance().clear();
         dispose();

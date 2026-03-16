@@ -1,5 +1,6 @@
 package com.center.manager.service;
 
+import com.center.manager.db.JpaRoomRepository;
 import com.center.manager.db.TransactionManager;
 import com.center.manager.repo.jpa.*;
 import com.center.manager.service.impl.*;
@@ -30,6 +31,12 @@ public final class ServiceFactory {
     private static final PaymentService PAYMENT_SERVICE =
             new PaymentServiceImpl(new JpaPaymentRepository(), TX);
 
+    private static final CourseService COURSE_SERVICE =
+            new CourseService(new JpaCourseRepository(), TX);
+
+    private static final RoomService ROOM_SERVICE =
+            new RoomService(new JpaRoomRepository(), TX);
+
     private ServiceFactory() {
     }
 
@@ -55,5 +62,13 @@ public final class ServiceFactory {
 
     public static PaymentService paymentService() {
         return PAYMENT_SERVICE;
+    }
+
+    public static CourseService courseService() {
+        return COURSE_SERVICE;
+    }
+
+    public static RoomService roomService() {
+        return ROOM_SERVICE;
     }
 }

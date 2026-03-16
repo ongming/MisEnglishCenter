@@ -34,7 +34,7 @@ public class StudentClassesPanel extends JPanel {
         add(lblTitle, BorderLayout.NORTH);
 
         classModel = new DefaultTableModel(
-                new String[]{"ID", "Tên lớp", "Khóa học", "Bắt đầu", "Kết thúc", "TT lớp", "TT ghi danh"}, 0) {
+                new String[]{"ID", "Tên lớp", "Khóa học", "Bắt đầu", "Kết thúc", "Phòng", "TT lớp", "TT ghi danh"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) { return false; }
         };
@@ -60,7 +60,13 @@ public class StudentClassesPanel extends JPanel {
         try {
             List<Object[]> classes = classService.getClassesByStudent(studentId);
             for (Object[] row : classes) {
-                classModel.addRow(row);
+                // row = [id, name, course, start, end, status, enrollStatus, ...]
+                // Thêm phòng học vào row (giả sử row[5] là roomName)
+                Object[] newRow = new Object[row.length + 1];
+                System.arraycopy(row, 0, newRow, 0, 5);
+                newRow[5] = row[5]; // roomName
+                System.arraycopy(row, 5, newRow, 6, row.length - 5);
+                classModel.addRow(newRow);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,

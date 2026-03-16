@@ -37,7 +37,7 @@ public class TeacherClassesPanel extends JPanel {
         UITheme.styleSectionTitle(lblTitle);
 
         classModel = new DefaultTableModel(
-                new String[]{"ID", "Tên lớp", "Khóa học", "Bắt đầu", "Kết thúc", "Sĩ số max", "Trạng thái"}, 0) {
+                new String[]{"ID", "Tên lớp", "Khóa học", "Bắt đầu", "Kết thúc", "Phòng", "Sĩ số max", "Trạng thái"}, 0) {
             @Override
             public boolean isCellEditable(int row, int col) { return false; }
         };
@@ -111,7 +111,13 @@ public class TeacherClassesPanel extends JPanel {
         try {
             List<Object[]> classes = classService.getClassesByTeacher(teacherId);
             for (Object[] row : classes) {
-                classModel.addRow(row);
+                // row = [id, name, course, start, end, max, status, ...]
+                // Thêm phòng học vào row (giả sử row[6] là roomName)
+                Object[] newRow = new Object[row.length + 1];
+                System.arraycopy(row, 0, newRow, 0, 6);
+                newRow[6] = row[6]; // roomName
+                System.arraycopy(row, 6, newRow, 7, row.length - 6);
+                classModel.addRow(newRow);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
@@ -136,4 +142,3 @@ public class TeacherClassesPanel extends JPanel {
         }
     }
 }
-

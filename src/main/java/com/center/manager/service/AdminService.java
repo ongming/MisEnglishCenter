@@ -3,7 +3,7 @@ package com.center.manager.service;
 import java.util.List;
 
 /**
- * Service xu ly nghiep vu Admin: quan ly giao vien va tao tai khoan.
+ * Service xu ly nghiep vu Admin: quan ly giao vien, tai khoan va lop hoc.
  */
 public interface AdminService {
 
@@ -20,4 +20,7 @@ public interface AdminService {
     void createTeacherAccount(Long teacherId, String username, String rawPassword) throws Exception;
 
     void createStudentAccount(Long studentId, String username, String rawPassword) throws Exception;
+
+    Long createClass(String className, Long courseId, Long teacherId, String startDate,
+                     String endDate, Integer maxStudent, Long roomId) throws Exception;
 }

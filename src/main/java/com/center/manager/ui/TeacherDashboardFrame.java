@@ -11,15 +11,22 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Dashboard Giảng viên.
+ * Giao diện chính (dashboard) cho giáo viên.
+ * Sidebar chuyển tab, content hiển thị các panel chức năng:
+ * - Xem danh sách lớp đang dạy
+ * - Xem lịch dạy
+ * - Quản lý điểm danh
  */
 public class TeacherDashboardFrame extends JFrame {
-
+    // Panel chứa nội dung các tab
     private JPanel contentPanel;
+    // Layout chuyển tab
     private CardLayout cardLayout;
+    // Các nút sidebar
     private JButton btnMyClasses, btnSchedule, btnAttendance, btnLogout;
+    // Nút đang active
     private JButton currentActiveBtn;
-
+    // Service lấy thông tin giáo viên
     private final PersonService personService = ServiceFactory.personService();
 
     public TeacherDashboardFrame() {
@@ -27,10 +34,13 @@ public class TeacherDashboardFrame extends JFrame {
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        // Khởi tạo giao diện
         initComponents();
     }
 
+    /**
+     * Khởi tạo các thành phần giao diện (sidebar, content, ...)
+     */
     private void initComponents() {
         setLayout(new BorderLayout());
 
