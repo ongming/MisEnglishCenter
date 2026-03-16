@@ -119,11 +119,11 @@ public class StudentDashboardFrame extends JFrame {
         add(contentPanel, BorderLayout.CENTER);
 
         // ========== SỰ KIỆN ==========
-        btnProfile.addActionListener(e -> { cardLayout.show(contentPanel, "profile"); setActiveButton(btnProfile); });
-        btnClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); classesPanel.refreshData(); setActiveButton(btnClasses); });
-        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); schedulePanel.refreshData(); setActiveButton(btnSchedule); });
-        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); attendancePanel.refreshData(); setActiveButton(btnAttendance); });
-        btnPayment.addActionListener(e -> { cardLayout.show(contentPanel, "payment"); paymentPanel.refreshData(); setActiveButton(btnPayment); });
+        bindNavigation(btnProfile, "profile", () -> { });
+        bindNavigation(btnClasses, "classes", classesPanel::refreshData);
+        bindNavigation(btnSchedule, "schedule", schedulePanel::refreshData);
+        bindNavigation(btnAttendance, "attendance", attendancePanel::refreshData);
+        bindNavigation(btnPayment, "payment", paymentPanel::refreshData);
         btnLogout.addActionListener(e -> handleLogout());
 
         // Mặc định hiện tab "Thông tin cá nhân"
@@ -156,6 +156,17 @@ public class StudentDashboardFrame extends JFrame {
         }
         UITheme.setSidebarButtonActive(btn, true);
         currentActiveBtn = btn;
+    }
+
+    /**
+     * Gán lambda điều hướng tab và callback refresh nếu tab cần tải lại dữ liệu.
+     */
+    private void bindNavigation(JButton button, String cardName, Runnable refresher) {
+        button.addActionListener(e -> {
+            cardLayout.show(contentPanel, cardName);
+            refresher.run();
+            setActiveButton(button);
+        });
     }
 
     /**

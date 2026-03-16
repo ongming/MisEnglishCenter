@@ -1,11 +1,15 @@
-package com.center.manager.db;
+package com.center.manager.repo.jpa;
 
 import com.center.manager.model.Room;
 import com.center.manager.repo.RoomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
+/**
+ * JPA implementation cho RoomRepository.
+ */
 public class JpaRoomRepository implements RoomRepository {
     @Override
     public List<Room> findAll(EntityManager em) {

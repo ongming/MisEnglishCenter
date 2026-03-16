@@ -1,9 +1,24 @@
 package com.center.manager.service;
 
-import com.center.manager.db.JpaRoomRepository;
 import com.center.manager.db.TransactionManager;
-import com.center.manager.repo.jpa.*;
-import com.center.manager.service.impl.*;
+import com.center.manager.repo.jpa.JpaAdminRepository;
+import com.center.manager.repo.jpa.JpaAttendanceRepository;
+import com.center.manager.repo.jpa.JpaAuthRepository;
+import com.center.manager.repo.jpa.JpaClassRepository;
+import com.center.manager.repo.jpa.JpaCourseRepository;
+import com.center.manager.repo.jpa.JpaPaymentRepository;
+import com.center.manager.repo.jpa.JpaRoomRepository;
+import com.center.manager.repo.jpa.JpaScheduleRepository;
+import com.center.manager.repo.jpa.JpaStudentRepository;
+import com.center.manager.repo.jpa.JpaTeacherRepository;
+import com.center.manager.service.impl.AdminServiceImpl;
+import com.center.manager.service.impl.AttendanceServiceImpl;
+import com.center.manager.service.impl.AuthServiceImpl;
+import com.center.manager.service.impl.ClassServiceImpl;
+import com.center.manager.service.impl.CourseServiceImpl;
+import com.center.manager.service.impl.PaymentServiceImpl;
+import com.center.manager.service.impl.PersonServiceImpl;
+import com.center.manager.service.impl.RoomServiceImpl;
 
 /**
  * Factory tao cac Service - UI goi ServiceFactory.xxx() de lay service.
@@ -32,10 +47,10 @@ public final class ServiceFactory {
             new PaymentServiceImpl(new JpaPaymentRepository(), TX);
 
     private static final CourseService COURSE_SERVICE =
-            new CourseService(new JpaCourseRepository(), TX);
+            new CourseServiceImpl(new JpaCourseRepository(), TX);
 
     private static final RoomService ROOM_SERVICE =
-            new RoomService(new JpaRoomRepository(), TX);
+            new RoomServiceImpl(new JpaRoomRepository(), TX);
 
     private ServiceFactory() {
     }

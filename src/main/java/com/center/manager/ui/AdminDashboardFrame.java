@@ -1,8 +1,9 @@
 package com.center.manager.ui;
 
 import com.center.manager.ui.panel.AdminClassListPanel;
-import com.center.manager.ui.panel.AdminTeacherListPanel;
 import com.center.manager.ui.panel.AdminPaymentPanel;
+import com.center.manager.ui.panel.AdminStudentListPanel;
+import com.center.manager.ui.panel.AdminTeacherListPanel;
 import com.center.manager.util.UserSession;
 
 import javax.swing.*;
@@ -50,10 +51,13 @@ public class AdminDashboardFrame extends JFrame {
         sidebar.add(Box.createVerticalStrut(25));
 
         JButton btnTeacherList = createSidebarButton("Danh sách giáo viên");
+        JButton btnStudentList = createSidebarButton("Danh sách học viên");
         JButton btnClassList = createSidebarButton("Danh sách lớp");
         JButton btnPayments = createSidebarButton("Thanh toán");
 
         sidebar.add(btnTeacherList);
+        sidebar.add(Box.createVerticalStrut(5));
+        sidebar.add(btnStudentList);
         sidebar.add(Box.createVerticalStrut(5));
         sidebar.add(btnClassList);
         sidebar.add(Box.createVerticalStrut(5));
@@ -72,10 +76,12 @@ public class AdminDashboardFrame extends JFrame {
         UITheme.styleRootPanel(contentPanel);
 
         AdminTeacherListPanel teacherListPanel = new AdminTeacherListPanel();
+        AdminStudentListPanel studentListPanel = new AdminStudentListPanel();
         AdminClassListPanel classListPanel = new AdminClassListPanel();
         AdminPaymentPanel paymentPanel = new AdminPaymentPanel();
 
         contentPanel.add(teacherListPanel, "teacher-list");
+        contentPanel.add(studentListPanel, "student-list");
         contentPanel.add(classListPanel, "class-list");
         contentPanel.add(paymentPanel, "payments");
 
@@ -85,6 +91,11 @@ public class AdminDashboardFrame extends JFrame {
             cardLayout.show(contentPanel, "teacher-list");
             teacherListPanel.refreshData();
             setActiveButton(btnTeacherList);
+        });
+        btnStudentList.addActionListener(e -> {
+            cardLayout.show(contentPanel, "student-list");
+            studentListPanel.refreshData();
+            setActiveButton(btnStudentList);
         });
         btnClassList.addActionListener(e -> {
             cardLayout.show(contentPanel, "class-list");

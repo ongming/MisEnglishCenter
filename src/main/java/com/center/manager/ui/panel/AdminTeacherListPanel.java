@@ -40,12 +40,16 @@ public class AdminTeacherListPanel extends JPanel {
         UITheme.stylePrimaryButton(btnCreateAccount);
         btnCreateAccount.addActionListener(e -> showCreateAccountDialog());
 
+        JButton btnDeleteTeacher = new JButton("Xóa giáo viên");
+        UITheme.stylePrimaryButton(btnDeleteTeacher);
+
         JButton btnRefresh = new JButton("Làm mới");
         UITheme.stylePrimaryButton(btnRefresh);
         btnRefresh.addActionListener(e -> loadTeachers());
 
         btnBar.add(btnAddTeacher);
         btnBar.add(btnCreateAccount);
+        btnBar.add(btnDeleteTeacher);
         btnBar.add(btnRefresh);
         topPanel.add(btnBar, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
@@ -61,6 +65,8 @@ public class AdminTeacherListPanel extends JPanel {
         JTable table = new JTable(teacherModel);
         UITheme.styleTable(table);
         add(new JScrollPane(table), BorderLayout.CENTER);
+
+        btnDeleteTeacher.addActionListener(e -> handleDeleteTeacher(table));
 
         loadTeachers();
     }
@@ -208,5 +214,34 @@ public class AdminTeacherListPanel extends JPanel {
         gbc.weightx = 1;
         panel.add(comp, gbc);
         return row + 1;
+    }
+
+    private void handleDeleteTeacher(JTable table) {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn giáo viên cần xóa.");
+            return;
+        }
+
+        Long teacherId = ((Number) teacherModel.getValueAt(row, 0)).longValue();
+        String teacherName = String.valueOf(teacherModel.getValueAt(row, 1));
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Xóa giáo viên '" + teacherName + "'?\nHệ thống sẽ gỡ giáo viên khỏi lớp và xóa tài khoản liên quan.",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            adminService.deleteTeacher(teacherId);
+            JOptionPane.showMessageDialog(this, "Đã xóa giáo viên thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            loadTeachers();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Không thể xóa giáo viên: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

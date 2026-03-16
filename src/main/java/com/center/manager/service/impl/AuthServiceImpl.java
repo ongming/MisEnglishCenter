@@ -24,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Object[] login(String username, String rawPassword) throws Exception {
+        // Chuoi lambda nay loc user theo trang thai active + so khop bcrypt trong cung 1 transaction.
         return tx.runInTransaction(em ->
                 Optional.ofNullable(authRepo.findByUsername(em, username))
                         .filter(u -> Boolean.TRUE.equals(u.getIsActive()))
@@ -35,4 +36,3 @@ public class AuthServiceImpl implements AuthService {
                         .orElse(null));
     }
 }
-

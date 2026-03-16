@@ -23,6 +23,8 @@ public class AdminClassListPanel extends JPanel {
     private final DefaultTableModel studentModel;
     private final JLabel lblStudentTitle;
     private final List<Long> classIds = new ArrayList<>();
+    private Long selectedClassId;
+    private String selectedClassName;
 
     public AdminClassListPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -43,6 +45,13 @@ public class AdminClassListPanel extends JPanel {
         UITheme.stylePrimaryButton(btnCreateStudentAcc);
         btnCreateStudentAcc.addActionListener(e -> showCreateStudentAccountDialog());
 
+        JButton btnAddStudentToClass = new JButton("Thêm HV vào lớp");
+        UITheme.stylePrimaryButton(btnAddStudentToClass);
+        btnAddStudentToClass.addActionListener(e -> showAddStudentToClassDialog());
+
+        JButton btnRemoveStudent = new JButton("Xóa HV khỏi lớp");
+        UITheme.stylePrimaryButton(btnRemoveStudent);
+
         JButton btnRefresh = new JButton("Làm mới");
         UITheme.stylePrimaryButton(btnRefresh);
         btnRefresh.addActionListener(e -> loadClasses());
@@ -52,6 +61,8 @@ public class AdminClassListPanel extends JPanel {
         btnCreateClass.addActionListener(e -> showCreateClassDialog());
 
         btnBar.add(btnCreateStudentAcc);
+        btnBar.add(btnAddStudentToClass);
+        btnBar.add(btnRemoveStudent);
         btnBar.add(btnRefresh);
         btnBar.add(btnCreateClass);
         topPanel.add(btnBar, BorderLayout.EAST);
@@ -99,6 +110,8 @@ public class AdminClassListPanel extends JPanel {
         UITheme.styleTable(studentTable);
         studentPanel.add(new JScrollPane(studentTable), BorderLayout.CENTER);
 
+        btnRemoveStudent.addActionListener(e -> handleRemoveStudentFromClass(studentTable));
+
         splitPane.setBottomComponent(studentPanel);
         add(splitPane, BorderLayout.CENTER);
 
@@ -108,6 +121,8 @@ public class AdminClassListPanel extends JPanel {
     public void refreshData() {
         loadClasses();
         studentModel.setRowCount(0);
+        selectedClassId = null;
+        selectedClassName = null;
         lblStudentTitle.setText("Chọn một lớp để xem danh sách học viên");
     }
 
@@ -130,6 +145,8 @@ public class AdminClassListPanel extends JPanel {
 
     private void loadStudentsInClass(Long classId, String className) {
         studentModel.setRowCount(0);
+        selectedClassId = classId;
+        selectedClassName = className;
         lblStudentTitle.setText("Học viên lớp: " + className);
         try {
             List<Object[]> rows = classService.getStudentsInClass(classId);
@@ -140,6 +157,108 @@ public class AdminClassListPanel extends JPanel {
             JOptionPane.showMessageDialog(this,
                     "Không tải được danh sách học viên: " + e.getMessage(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showAddStudentToClassDialog() {
+        if (selectedClassId == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp học trước.");
+            return;
+        }
+
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this), "Thêm học viên vào lớp", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setSize(500, 300);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel form = new JPanel(new GridBagLayout());
+        UITheme.styleCard(form);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JComboBox<String> cboStudent = new JComboBox<>();
+        List<Long> studentIds = new ArrayList<>();
+
+        try {
+            List<Object[]> rows = adminService.getStudentsNotInClass(selectedClassId);
+            rows.forEach(r -> {
+                studentIds.add(((Number) r[0]).longValue());
+                cboStudent.addItem(r[1] + " - " + r[2] + " - " + r[3]);
+            });
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Không tải được danh sách học viên: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (studentIds.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không còn học viên phù hợp để thêm vào lớp này.");
+            return;
+        }
+
+        int row = 0;
+        row = addFormRow(form, gbc, row, "Lớp:", new JLabel(selectedClassName == null ? String.valueOf(selectedClassId) : selectedClassName));
+        row = addFormRow(form, gbc, row, "Học viên:", cboStudent);
+
+        JButton btnAdd = new JButton("Thêm vào lớp");
+        UITheme.stylePrimaryButton(btnAdd);
+        btnAdd.addActionListener(e -> {
+            int idx = cboStudent.getSelectedIndex();
+            if (idx < 0) {
+                JOptionPane.showMessageDialog(dialog, "Vui lòng chọn học viên.");
+                return;
+            }
+            try {
+                adminService.addStudentToClass(selectedClassId, studentIds.get(idx));
+                JOptionPane.showMessageDialog(dialog, "Thêm học viên vào lớp thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+                loadStudentsInClass(selectedClassId, selectedClassName);
+                loadClasses();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialog, "Không thể thêm học viên: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 1;
+        gbc.gridy = row;
+        form.add(btnAdd, gbc);
+
+        dialog.setContentPane(form);
+        dialog.setVisible(true);
+    }
+
+    private void handleRemoveStudentFromClass(JTable studentTable) {
+        if (selectedClassId == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn lớp học trước.");
+            return;
+        }
+
+        int row = studentTable.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn học viên cần xóa khỏi lớp.");
+            return;
+        }
+
+        Long studentId = ((Number) studentModel.getValueAt(row, 0)).longValue();
+        String studentName = String.valueOf(studentModel.getValueAt(row, 1));
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Xóa học viên '" + studentName + "' khỏi lớp '" + selectedClassName + "'?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            adminService.removeStudentFromClass(selectedClassId, studentId);
+            JOptionPane.showMessageDialog(this, "Đã xóa học viên khỏi lớp.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            loadStudentsInClass(selectedClassId, selectedClassName);
+            loadClasses();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Không thể xóa học viên: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -230,10 +349,11 @@ public class AdminClassListPanel extends JPanel {
         // Load danh sách khóa học
         try {
             List<Object[]> courses = ServiceFactory.courseService().getAllCourses();
-            for (Object[] c : courses) {
+            // Giu cung thu tu giua courseIds va cboCourse de lay dung ID theo selectedIndex.
+            courses.forEach(c -> {
                 courseIds.add(((Number) c[0]).longValue());
                 cboCourse.addItem((String) c[1]);
-            }
+            });
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Không tải được DS khóa học: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -243,10 +363,10 @@ public class AdminClassListPanel extends JPanel {
             List<Object[]> teachers = adminService.getAllTeachers();
             cboTeacher.addItem("(Không chọn)");
             teacherIds.add(null);
-            for (Object[] t : teachers) {
+            teachers.forEach(t -> {
                 teacherIds.add(((Number) t[0]).longValue());
                 cboTeacher.addItem((String) t[1]);
-            }
+            });
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Không tải được DS giáo viên: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -254,10 +374,10 @@ public class AdminClassListPanel extends JPanel {
         // Load danh sách phòng học
         try {
             List<com.center.manager.model.Room> rooms = ServiceFactory.roomService().getAllRooms();
-            for (com.center.manager.model.Room r : rooms) {
+            rooms.forEach(r -> {
                 roomIds.add(r.getRoomId());
                 cboRoom.addItem(r.getRoomName() + " (" + r.getLocation() + ")");
-            }
+            });
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Không tải được DS phòng học: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;

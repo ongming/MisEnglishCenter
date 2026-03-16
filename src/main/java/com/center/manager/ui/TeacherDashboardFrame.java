@@ -110,13 +110,24 @@ public class TeacherDashboardFrame extends JFrame {
         add(contentPanel, BorderLayout.CENTER);
 
         // ========== SỰ KIỆN ==========
-        btnMyClasses.addActionListener(e -> { cardLayout.show(contentPanel, "classes"); classesPanel.refreshData(); setActiveButton(btnMyClasses); });
-        btnSchedule.addActionListener(e -> { cardLayout.show(contentPanel, "schedule"); schedulePanel.refreshData(); setActiveButton(btnSchedule); });
-        btnAttendance.addActionListener(e -> { cardLayout.show(contentPanel, "attendance"); attendancePanel.refreshData(); setActiveButton(btnAttendance); });
+        bindNavigation(btnMyClasses, "classes", classesPanel::refreshData);
+        bindNavigation(btnSchedule, "schedule", schedulePanel::refreshData);
+        bindNavigation(btnAttendance, "attendance", attendancePanel::refreshData);
         btnLogout.addActionListener(e -> handleLogout());
 
         // Mặc định hiện tab "Lớp đang dạy"
         setActiveButton(btnMyClasses);
+    }
+
+    /**
+     * Đăng ký 1 lambda xử lý điều hướng tab + refresh dữ liệu + active button.
+     */
+    private void bindNavigation(JButton button, String cardName, Runnable refresher) {
+        button.addActionListener(e -> {
+            cardLayout.show(contentPanel, cardName);
+            refresher.run();
+            setActiveButton(button);
+        });
     }
 
     private JButton createSidebarButton(String text) {

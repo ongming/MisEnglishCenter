@@ -17,6 +17,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepo;
     private final TransactionManager tx;
 
+    // Mapper ket qua query payment, chuan hoa cot thoi gian nullable de tranh null tren JTable.
     private final Function<Object[], Object[]> paymentRowMapper =
             r -> new Object[]{r[0], r[1], r[2], r[3] != null ? r[3].toString() : "", r[4], r[5], r[6]};
 
@@ -49,6 +50,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         tx.runInTransaction(em -> {
+            // Lambda transaction nay tao giao dich moi va persist trong 1 don vi xu ly.
             Payment payment = new Payment();
             payment.setStudentId(studentId);
             payment.setEnrollmentId(enrollmentId);

@@ -16,9 +16,11 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepo;
     private final TransactionManager tx;
 
+    // Mapper lich su diem danh theo lop, co chuyen cot ngay null-safe sang String.
     private final Function<Object[], Object[]> historyRowMapper =
             r -> new Object[]{r[0], r[1], str(r[2]), r[3], r[4]};
 
+    // Mapper diem danh theo hoc vien.
     private final Function<Object[], Object[]> studentRowMapper =
             r -> new Object[]{r[0], str(r[1]), r[2], r[3]};
 
@@ -48,6 +50,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public void saveAttendance(Long attendanceId, Long studentId, Long classId,
                                String attendDate, String status, String note) throws Exception {
+        // Lambda transaction nay gom ca update va create de dam bao thay doi du lieu atomically.
         tx.runInTransaction(em -> {
             if (attendanceId != null && attendanceId > 0) {
                 Attendance att = attendanceRepo.findById(em, attendanceId);
@@ -74,4 +77,3 @@ public class AttendanceServiceImpl implements AttendanceService {
         return o == null ? "" : o.toString();
     }
 }
-
