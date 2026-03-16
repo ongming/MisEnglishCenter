@@ -1,50 +1,18 @@
 package com.center.manager.service;
 
-import com.center.manager.db.TransactionManager;
-import com.center.manager.model.Teacher;
-import com.center.manager.model.Student;
-import com.center.manager.repo.TeacherRepository;
-import com.center.manager.repo.StudentRepository;
-
-import java.util.Optional;
-
 /**
- * Service lấy thông tin giảng viên / sinh viên.
+ * Service lay thong tin giang vien / hoc vien.
  */
-public class PersonService {
-    private final TeacherRepository teacherRepo;
-    private final StudentRepository studentRepo;
-    private final TransactionManager tx;
+public interface PersonService {
 
-    public PersonService(TeacherRepository teacherRepo, StudentRepository studentRepo, TransactionManager tx) {
-        this.teacherRepo = teacherRepo;
-        this.studentRepo = studentRepo;
-        this.tx = tx;
-    }
+    /** Lay ho ten giang vien theo ID. */
+    String getTeacherName(Long teacherId) throws Exception;
 
-    public String getTeacherName(Long teacherId) throws Exception {
-        return tx.runInTransaction(em ->
-                Optional.ofNullable(teacherRepo.findById(em, teacherId))
-                        .map(Teacher::getFullName).orElse(null));
-    }
+    /** Lay ho ten hoc vien theo ID. */
+    String getStudentName(Long studentId) throws Exception;
 
-    public String getStudentName(Long studentId) throws Exception {
-        return tx.runInTransaction(em ->
-                Optional.ofNullable(studentRepo.findById(em, studentId))
-                        .map(Student::getFullName).orElse(null));
-    }
-
-    public Object[] getStudentProfile(Long studentId) throws Exception {
-        return tx.runInTransaction(em ->
-                Optional.ofNullable(studentRepo.findById(em, studentId))
-                        .map(s -> new Object[]{
-                                s.getStudentId(), s.getFullName(),
-                                str(s.getDateOfBirth()), str(s.getGender()),
-                                str(s.getPhone()), str(s.getEmail()),
-                                str(s.getAddress()), str(s.getRegistrationDate()),
-                                s.getStatus()
-                        }).orElse(null));
-    }
-
-    private String str(Object o) { return o == null ? "" : o.toString(); }
+    /**
+     * Lay thong tin profile hoc vien de hien thi len UI.
+     */
+    Object[] getStudentProfile(Long studentId) throws Exception;
 }
