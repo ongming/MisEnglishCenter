@@ -11,8 +11,11 @@ public class JpaClassRepository implements ClassRepository {
     public List<Object[]> findAllClasses(EntityManager em) {
         String jpql = """
                 SELECT c.classId, c.className, COALESCE(co.courseName, 'N/A'),
-                       c.startDate, c.endDate, c.maxStudent, c.status
-                FROM ClassEntity c LEFT JOIN Course co ON c.courseId = co.courseId
+                       c.startDate, c.endDate, c.maxStudent, c.status,
+                       COALESCE(r.roomName, 'N/A')
+                FROM ClassEntity c
+                LEFT JOIN Course co ON c.courseId = co.courseId
+                LEFT JOIN Room r ON c.roomId = r.roomId
                 ORDER BY c.startDate DESC
                 """;
         return em.createQuery(jpql, Object[].class).getResultList();
@@ -22,8 +25,11 @@ public class JpaClassRepository implements ClassRepository {
     public List<Object[]> findClassesByTeacher(EntityManager em, Long teacherId) {
         String jpql = """
                 SELECT c.classId, c.className, COALESCE(co.courseName, 'N/A'),
-                       c.startDate, c.endDate, c.maxStudent, c.status
-                FROM ClassEntity c LEFT JOIN Course co ON c.courseId = co.courseId
+                       c.startDate, c.endDate, c.maxStudent, c.status,
+                       COALESCE(r.roomName, 'N/A')
+                FROM ClassEntity c
+                LEFT JOIN Course co ON c.courseId = co.courseId
+                LEFT JOIN Room r ON c.roomId = r.roomId
                 WHERE c.teacherId = :teacherId
                 ORDER BY c.startDate DESC
                 """;
@@ -50,10 +56,11 @@ public class JpaClassRepository implements ClassRepository {
     public List<Object[]> findClassesByStudent(EntityManager em, Long studentId) {
         String jpql = """
                 SELECT c.classId, c.className, COALESCE(co.courseName, 'N/A'),
-                       c.startDate, c.endDate, c.status, e.status
+                       c.startDate, c.endDate, COALESCE(r.roomName, 'N/A'), c.status, e.status
                 FROM Enrollment e
                 JOIN ClassEntity c ON e.classId = c.classId
                 LEFT JOIN Course co ON c.courseId = co.courseId
+                LEFT JOIN Room r ON c.roomId = r.roomId
                 WHERE e.studentId = :studentId
                 ORDER BY c.startDate DESC
                 """;

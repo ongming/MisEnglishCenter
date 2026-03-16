@@ -6,27 +6,35 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 /**
- * Theme chung cho toàn bộ giao diện Swing.
- * Chủ đạo xanh lá đậm theo phong cách tối giản hiện đại.
+ * Định nghĩa theme chung cho toàn bộ giao diện Swing.
+ * Chủ đạo xanh lá đậm, phong cách tối giản hiện đại.
+ * Dùng để đồng bộ màu sắc, font, style cho toàn app.
  */
 public final class UITheme {
-
+    // Màu nền app
     public static final Color APP_BG = new Color(240, 247, 243);
+    // Màu nền panel
     public static final Color PANEL_BG = Color.WHITE;
-
+    // Màu sidebar
     public static final Color SIDEBAR_BG = new Color(11, 61, 44);
     public static final Color SIDEBAR_ITEM_BG = new Color(11, 61, 44);
     public static final Color SIDEBAR_ITEM_ACTIVE_BG = new Color(19, 94, 68);
-
+    // Màu chủ đạo
     public static final Color PRIMARY = new Color(16, 122, 84);
     public static final Color PRIMARY_DARK = new Color(11, 94, 64);
+    // Màu chữ chính
     public static final Color TEXT_DARK = new Color(28, 37, 34);
+    // Màu chữ phụ
     public static final Color TEXT_MUTED = new Color(198, 225, 214);
+    // Màu cảnh báo
     public static final Color DANGER = new Color(220, 68, 55);
 
     private UITheme() {
     }
 
+    /**
+     * Cài đặt style mặc định cho toàn bộ UI (font, màu, ...)
+     */
     public static void installGlobalDefaults() {
         UIManager.put("Panel.background", APP_BG);
         UIManager.put("OptionPane.background", APP_BG);

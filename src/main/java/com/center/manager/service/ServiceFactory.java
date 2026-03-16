@@ -2,6 +2,7 @@ package com.center.manager.service;
 
 import com.center.manager.db.TransactionManager;
 import com.center.manager.repo.jpa.*;
+import com.center.manager.db.JpaRoomRepository;
 
 /**
  * Factory tạo các Service — UI gọi ServiceFactory.xxx() để lấy service.
@@ -24,10 +25,16 @@ public final class ServiceFactory {
             new AttendanceService(new JpaAttendanceRepository(), TX);
 
     private static final AdminService ADMIN_SERVICE =
-            new AdminService(new JpaAdminRepository(), TX);
+            new AdminService(new JpaAdminRepository(), TX, new JpaClassRepository());
 
     private static final PaymentService PAYMENT_SERVICE =
             new PaymentService(new JpaPaymentRepository(), TX);
+
+    private static final CourseService COURSE_SERVICE =
+            new CourseService(new com.center.manager.repo.jpa.JpaCourseRepository(), TX);
+
+    private static final RoomService ROOM_SERVICE =
+            new RoomService(new JpaRoomRepository(), TX);
 
     private ServiceFactory() {}
 
@@ -37,4 +44,6 @@ public final class ServiceFactory {
     public static AttendanceService attendanceService() { return ATTENDANCE_SERVICE; }
     public static AdminService adminService() { return ADMIN_SERVICE; }
     public static PaymentService paymentService() { return PAYMENT_SERVICE; }
+    public static CourseService courseService() { return COURSE_SERVICE; }
+    public static RoomService roomService() { return ROOM_SERVICE; }
 }

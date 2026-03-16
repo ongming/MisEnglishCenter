@@ -1,9 +1,11 @@
 package com.center.manager.service;
 
 import com.center.manager.db.TransactionManager;
+import com.center.manager.model.ClassEntity;
 import com.center.manager.model.Teacher;
 import com.center.manager.model.UserAccount;
 import com.center.manager.repo.AdminRepository;
+import com.center.manager.repo.ClassRepository;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
@@ -16,10 +18,12 @@ public class AdminService {
 
     private final AdminRepository adminRepo;
     private final TransactionManager tx;
+    private final ClassRepository classRepo;
 
-    public AdminService(AdminRepository adminRepo, TransactionManager tx) {
+    public AdminService(AdminRepository adminRepo, TransactionManager tx, ClassRepository classRepo) {
         this.adminRepo = adminRepo;
         this.tx = tx;
+        this.classRepo = classRepo;
     }
 
     public List<Object[]> getAllTeachers() throws Exception {
@@ -111,6 +115,48 @@ public class AdminService {
 
             adminRepo.saveUserAccount(em, account);
             return null;
+        });
+    }
+
+    /**
+     * Tạo mới một lớp học (class) cho Admin.
+     * @param className Tên lớp học
+     * @param courseId ID khóa học
+     * @param teacherId ID giáo viên (có thể null)
+     * @param startDate Ngày bắt đầu (yyyy-MM-dd)
+     * @param endDate Ngày kết thúc (yyyy-MM-dd, có thể null)
+     * @param maxStudent Số lượng học viên tối đa
+     * @param roomId ID phòng học (có thể null)
+     * @return ID lớp học vừa tạo
+     * @throws Exception nếu có lỗi
+     */
+    public Long createClass(String className, Long courseId, Long teacherId, String startDate, String endDate, Integer maxStudent, Long roomId) throws Exception {
+        if (className == null || className.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên lớp học không được để trống.");
+        }
+        if (courseId == null) {
+            throw new IllegalArgumentException("Phải chọn khóa học.");
+        }
+        if (startDate == null || startDate.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phải nhập ngày bắt đầu.");
+        }
+        if (maxStudent == null || maxStudent <= 0) {
+            throw new IllegalArgumentException("Số lượng học viên tối đa phải lớn hơn 0.");
+        }
+        return tx.runInTransaction(em -> {
+            ClassEntity clazz = new ClassEntity();
+            clazz.setClassName(className.trim());
+            clazz.setCourseId(courseId);
+            clazz.setTeacherId(teacherId);
+            clazz.setStartDate(java.time.LocalDate.parse(startDate));
+            if (endDate != null && !endDate.trim().isEmpty()) {
+                clazz.setEndDate(java.time.LocalDate.parse(endDate));
+            }
+            clazz.setMaxStudent(maxStudent);
+            clazz.setRoomId(roomId);
+            clazz.setStatus("Planned"); // Trạng thái mặc định
+            em.persist(clazz); // Lưu lớp học mới vào DB
+            return clazz.getClassId();
         });
     }
 
